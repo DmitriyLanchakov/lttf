@@ -1,0 +1,18 @@
+<?
+extract([
+    'classes' => '',
+    'item_classes' => '',
+    'checked' => []
+], EXTR_SKIP);
+?>
+
+<ul class="subject-chooser <?= $classes ?>">
+    <? foreach ($subjects as $subject): ?>
+        <li class="<?= $item_classes ?>">
+            <label class="checkbox checkbox-labeled">
+                <input type="checkbox" name="subjects[]" value="<?= $subject['id'] ?>" <?= in_array($subject['id'], $checked) ? 'checked' : '' ?>>
+                <span><?= $subject['name'] ?></span>
+            </label>
+        </li>
+    <? endforeach ?>
+</ul>

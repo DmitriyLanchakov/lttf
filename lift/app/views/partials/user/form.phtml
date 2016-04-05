@@ -1,0 +1,222 @@
+<?
+extract([
+    'classes' => '',
+    'type' => 'create'
+], EXTR_SKIP);
+?>
+
+<form action="" class="user-form form form-lg <?= $classes ?>" method="POST" enctype="multipart/form-data">
+    <!-- Page header -->
+    <div class="page-header ta-center" id="page-header" <?= !empty($user['background']) ? 'style="background-image: url(\'/upload/' . $user['background'] . '\')"' : '' ?>>
+        <div class="container">
+            <div class="page-header-inner">
+                <div class="page-header-cell va-middle">
+                    <div class="user-form-avatar image-uploader image-uploader-small">
+                        <img class="image-uploader-preview avatar" src="<?= Helper::avatarUrl($user['avatar'], 78) ?>" alt="Аватар" width="78" height="78">
+                        <p>Загрузить аватар</p>
+                        <input type="hidden" name="avatar" value="<?= (!empty($user['avatar'])) ? $user['avatar'] : '' ?>">
+                        <input class="image-uploader-input" type="file" name="avatar">
+                    </div>
+                    
+                    <div class="image-button image-uploader" data-image-uploader-preview="#page-header">
+                        <div class="image-button-inner">
+                            <p class="image-button-caption">Загрузить фон</p>
+                            <p class="image-button-hint">до 5 МБ</p>
+                        </div>
+                        <input type="hidden" name="background" value="<?= (!empty($user['background'])) ? $user['background'] : '' ?>">
+                        <input class="image-uploader-input" type="file" name="background">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page header -->
+    
+    <div class="container">
+        <!-- Messages -->
+        <? if (!empty($result['success'])): ?>
+            <div class="form-message alert alert-success">
+                <p>Профиль <?= ($type == 'create') ? 'создан' : 'обновлен' ?></p>
+            </div>
+        <? elseif (!empty($result['error'])): ?>
+            <div class="form-message alert alert-error">
+                <? if (!empty($result['error']['existed_user'])): ?>
+                    <p>Пользователь с таким адресом электронной почты уже существует</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['database']['pg_update'])): ?>
+                    <p>Невозможно обновить базу данных</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['email']['empty'])): ?>
+                    <p>Введите e-mail</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['email']['format'])): ?>
+                    <p>Неверный формат e-mail</p>
+                <? endif; ?>
+                        
+                <? if (!empty($result['error']['data']['password'])): ?>
+                    <p>Пароль должен содержать от 6 до 30 латинских букв, цифр и символов</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['password_confirmation'])): ?>
+                    <p>Подтвердите пароль</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['first_name'])): ?>
+                    <p>Введите имя</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['middle_name'])): ?>
+                    <p>Введите отчество</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['second_name'])): ?>
+                    <p>Введите фамилию</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['type'])): ?>
+                    <p>Введите тип</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['file']['avatar'])): ?>
+                    <p>Ошибка загрузки аватара</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['file']['background'])): ?>
+                    <p>Ошибка загрузки фона</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['phone'])): ?>
+                    <p>Неверный формат номера телефона</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['website'])): ?>
+                    <p>Неверный формат адреса сайта</p>
+                <? endif; ?>
+            </div>
+        <? endif ?>
+        <!-- /Messages -->
+        
+        <!-- Email -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="user-form-email">Email</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($user['email']) ? $user['email'] : '' ?>" name="email" id="user-form-email" maxlength="100">
+            </div>
+        </div>
+        <!-- /Email -->
+        
+        <!-- First name -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="user-form-first-name">Имя</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($user['first_name']) ? $user['first_name'] : '' ?>" name="first_name" id="user-form-first-name" maxlength="100">
+            </div>
+        </div>
+        <!-- /First name -->
+        
+        <!-- Middle name -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="user-form-middle-name">Отчество</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($user['middle_name']) ? $user['middle_name'] : '' ?>" name="middle_name" id="user-form-middle-name" maxlength="100">
+            </div>
+        </div>
+        <!-- /Middle name -->
+        
+        <!-- Second name -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="user-form-second-name">Фамилия</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($user['second_name']) ? $user['second_name'] : '' ?>" name="second_name" id="user-form-second-name" maxlength="100">
+            </div>
+        </div>
+        <!-- /Second name -->
+        
+        <!-- Password -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="user-form-password">Новый пароль дважды</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="password" value="<?= isset($user['password']) ? $user['password'] : '' ?>" name="password" id="user-form-password" maxlength="30">
+                <br><br>
+                <input class="text-field text-field-lg full-width" type="password" value="<?= isset($user['password_confirmation']) ? $user['password_confirmation'] : '' ?>" name="password_confirmation" id="user-form-password-confirmation" maxlength="30">
+            </div>
+        </div>
+        <!-- /Password -->
+        
+        <? if ($type == 'update'): ?>
+            <!-- Group -->
+            <div class="form-item">
+                <div class="form-item-header">
+                    <label class="label" for="user-form-group">Группа</label>
+                </div>
+                <div class="form-item-body">
+                    <select class="select select-lg full-width" name="group" id="user-update-group">
+                        <?= Helper::generateSelectOptions(array_column($user_groups, 'id'), array_column($user_groups, 'name'), $user['group']); ?>
+                    </select>
+                </div>
+            </div>
+            <!-- /Group -->
+        <? endif ?>
+        
+        <div class="form-item form-item-extra row">
+            <div class="col-6">
+                <!-- Phone -->
+                <div class="row">
+                    <div class="col-1">
+                        <i class="icon icon-phone-gray"></i>
+                    </div>
+                    <div class="col-1 ta-right">
+                        7
+                    </div>
+                    <div class="col-10">
+                        <input type="text" value="<?= isset($user['phone']) ? $user['phone'] : '' ?>" name="phone" id="registration-phone" class="text-field text-field-lg full-width" maxlength="20">
+                    </div>
+                </div>
+                <!-- /Phone -->
+                
+                <!-- Skype -->
+                <div class="row">
+                    <div class="col-2">
+                        <i class="icon icon-skype-gray"></i>
+                    </div>
+                    <div class="col-10">
+                        <input type="text" value="<?= isset($user['skype']) ? $user['skype'] : '' ?>" name="skype" id="registration-skype" class="text-field text-field-lg full-width" maxlength="100">
+                    </div>
+                </div>
+                <!-- /Skype -->
+                
+                <!-- Website -->
+                <div class="row">
+                    <div class="col-2">
+                        <i class="icon icon-website-gray"></i>
+                    </div>
+                    <div class="col-10">
+                        <input type="text" value="<?= isset($user['website']) ? $user['website'] : '' ?>" name="website" id="registration-website" class="text-field text-field-lg full-width" maxlength="200">
+                    </div>
+                </div>
+                <!-- /Website -->
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="form-footer row">
+            <div class="col-6 col-offset-3">
+                <button class="button button-lg full-width" name="submit" value="1">Сохранить</button>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </div>
+</form>

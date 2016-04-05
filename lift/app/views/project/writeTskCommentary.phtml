@@ -1,0 +1,7 @@
+<li class="row">
+    <? $this->view->partial('partials/comments/comment', [
+        'comment' => $commentary,
+        'user_can_delete_commentaries' => true,
+        'type' => 'task'
+    ]) ?>
+</li>

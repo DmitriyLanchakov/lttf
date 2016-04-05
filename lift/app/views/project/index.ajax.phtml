@@ -1,0 +1,10 @@
+<? if (empty($projects)) { return; } ?>
+
+<? foreach ($projects as $item): ?>
+    <li class="entry-list-item" data-entry-list-max-amount="<?= $pagination['amount'] ?>">
+        <? $this->view->partial('partials/entry', [
+            'item' => $item,
+            'type' => 'project'
+        ]) ?>
+    </li>
+<? endforeach ?>

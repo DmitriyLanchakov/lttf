@@ -1,0 +1,19 @@
+<!-- Page header -->
+<div class="page-header">
+    <div class="container">
+        <div class="page-header-inner">
+            <div class="page-header-top">
+                <p class="page-header-cell page-header-title"><?= $page['title'] ?></p>
+                <p class="page-header-cell page-header-items">
+                    <a class="icon icon-edit-white" href="/pages/<?= $page['id'] ?>/update" title="Редактировать страницу">Редактировать страницу</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page header -->
+
+<div class="container">
+    <?= $page['text'] ?>
+</div>
+

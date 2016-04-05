@@ -1,0 +1,139 @@
+<?php
+function generateUserGroupOptions($user_groups, $selected_group) {
+    if (empty($user_groups)) {
+        return '';
+    }
+
+    $result = '';
+
+    foreach ($user_groups as $user_group) {
+        $result .= '<option';
+
+        if ($selected_group == $user_group['id']) {
+            $result .= ' selected';
+        }
+
+        $result .= ' value="' . $user_group['id'] . '">' . $user_group['name'] . '</option>';
+    }
+
+    return $result;
+}
+?>
+
+<div class="container">
+    <div class="row">
+        <? if ($logged_user): ?>
+            <p>Вы уже зарегистрированы.</p>
+        <? else: ?>
+            <div class="centered-layout">
+                <h1 class="page-heading">Регистрация</h1>
+                
+                <form class="registration-form" method="POST">
+                    <? if (!empty($result['success'])): ?>
+                        <div class="alert alert-success">
+                            <p>Спасибо за регистрацию!</p>
+                        </div>
+                    <? elseif (!empty($result['error'])): ?>
+                        <div class="alert alert-error">
+                            <? if (!empty($result['error']['hasRights'])): ?>
+                                <p>Недостаточно прав</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['existed_user'])): ?>
+                                <p>Пользователь с таким адресом электронной почты уже существует</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['database']['pg_update'])): ?>
+                                <p>Невозможно обновить базу данных</p>
+                            <? endif; ?>
+                            
+                            <? if (!empty($result['error']['data']['email']['empty'])): ?>
+                                <p>Введите e-mail</p>
+                            <? endif; ?>
+                            
+                            <? if (!empty($result['error']['data']['email']['format'])): ?>
+                                <p>Неверный формат e-mail</p>
+                            <? endif; ?>
+                            
+                            <? if (!empty($result['error']['data']['password'])): ?>
+                                <p>Введите пароль, содержащий от 6 до 30 латинских букв, цифр и символов</p>
+                            <? endif; ?>
+                            
+                            <? if (!empty($result['error']['data']['password_confirmation'])): ?>
+                                <p>Подтвердите пароль</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['data']['first_name'])): ?>
+                                <p>Введите имя</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['data']['middle_name'])): ?>
+                                <p>Введите отчество</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['data']['second_name'])): ?>
+                                <p>Введите фамилию</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['data']['type'])): ?>
+                                <p>Введите тип</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['data']['phone'])): ?>
+                                <p>Неверный формат номера телефона</p>
+                            <? endif; ?>
+                            
+                            <? if (!empty($result['error']['data']['website'])): ?>
+                                <p>Неверный формат адреса сайта</p>
+                            <? endif; ?>
+                         </div>
+                    <? endif; ?>
+                    
+                    <!-- Email -->
+                    <div class="form-item">
+                        <input type="email" value="<?= isset($user['email']) ? $user['email'] : '' ?>" name="email" id="registration-email" class="text-field text-field-lg full-width" placeholder="E-mail" maxlength="100">
+                    </div>
+                    <!-- /Email -->
+                    
+                    <!-- Password -->
+                    <div class="form-item">
+                        <input type="password" value="<?= isset($user['password']) ? $user['password'] : '' ?>" name="password" id="registration-password" class="text-field text-field-lg full-width" placeholder="Пароль" maxlength="30">
+                    </div>
+                    <!-- /Password -->
+                    
+                    <!-- Password confirmation -->
+                    <div class="form-item">
+                        <input type="password" value="<?= isset($user['password_confirmation']) ? $user['password_confirmation'] : '' ?>" name="password_confirmation" id="registration-password-confirmation" class="text-field text-field-lg full-width" placeholder="Пароль ещё раз" maxlength="30">
+                    </div>
+                    <!-- /Password confirmation -->
+                    
+                    <!-- First name -->
+                    <div class="form-item">
+                        <input type="text" value="<?= isset($user['first_name']) ? $user['first_name'] : '' ?>" name="first_name" id="registration-first-name" class="text-field text-field-lg full-width" placeholder="Имя" maxlength="100">
+                    </div>
+                    <!-- /First name -->
+
+                    <!-- Patronymic -->
+                    <div class="form-item">
+                        <input type="text" value="<?= isset($user['middle_name']) ? $user['middle_name'] : '' ?>" name="middle_name" id="registration-middle-name" class="text-field text-field-lg full-width" placeholder="Отчество" maxlength="100">
+                    </div>
+                    <!-- /Patronymic -->
+
+                    <!-- Last name -->
+                    <div class="form-item">
+                        <input type="text" value="<?= isset($user['second_name']) ? $user['second_name'] : '' ?>" name="second_name" id="registration-second-name" class="text-field text-field-lg full-width" placeholder="Фамилия" maxlength="100">
+                    </div>
+                    <!-- /Last name -->
+                    
+                    <!-- Submit -->
+                    <div class="form-item row">
+                        <div class="col-16">
+                            <button class="button button-lg full-width" name="submit" value="1">Зарегистрироваться</button>
+                        </div>
+                    </div>
+                    <!-- /Submit -->
+                </form>
+            </div>
+        <? endif ?>
+    </div>
+</div>

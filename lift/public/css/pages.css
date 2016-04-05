@@ -1,0 +1,20 @@
+/*
+    Pages
+==========================================================*/
+
+
+
+.page-index .entry-list {
+    margin-top: 60px;
+}
+
+
+.page-project .entry-list,
+.page-blog .entry-list {
+    margin-top: 12px;
+}
+
+
+.page-profile .site-content-inner {
+    padding-bottom: 0;
+}

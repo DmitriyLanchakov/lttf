@@ -1,0 +1,21 @@
+<?
+extract([
+    'classes' => '',
+    'type' => 'blog_post'
+], EXTR_SKIP);
+?>
+
+<ol class="comments-list <?= $classes ?>">
+    <? if (!empty($comments)): ?>
+        <? foreach ($comments as $comment): ?>
+            <? if ($comment['deleted'] == 't') { continue; } ?>
+
+            <li class="row">
+                <? $this->partial('partials/comments/comment', [
+                    'comment' => $comment,
+                    'type' => $type
+                ]) ?>
+            </li>
+        <? endforeach ?>
+    <? endif ?>
+</ol>

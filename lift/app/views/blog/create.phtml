@@ -1,0 +1,148 @@
+
+
+<?
+$logged_user = $this->session->get('logged_user') ? $this->session->get('logged_user')['success'] : null;
+
+function generateBlogHeadingOptions($headings, $selected_heading) {
+    if (empty($headings)) {
+        return '';
+    }
+
+    $result = '';
+
+    foreach ($headings as $heading) {
+        $result .= '<option';
+
+        if ($selected_heading == $heading['id']) {
+            $result .= ' selected';
+        }
+
+        $result .= ' value="' . $heading['id'] . '">' . $heading['name'] . '</option>';
+    }
+
+    return $result;
+}
+?>
+
+<div class="layout">
+    <? if ($logged_user['group'] != 1): ?>
+
+        <p class="alert alert-danger">Вы не можете создавать блоги</p>
+
+    <? else: ?>
+
+        <h2>Создание блога</h2>
+
+        <div class="row">
+            <div class="col-xs-6">
+                <? if (!empty($result['success'])): ?>
+                
+                    <div class="alert alert-success">
+                        <p>Блог создан</p>
+                    </div>
+                    
+                <? else: ?>
+
+                        <form class="form-horizontal" method="post" enctype="multipart/form-data">
+                            <?if (!empty($result['error'])): ?>
+                                <div class="alert alert-danger">
+                                    <? if (!empty($result['error']['database']['pg_insert'])): ?>
+                                        <p>Невозможно обновить базу данных</p>
+                                    <? endif; ?>
+
+                                    <? if (!empty($result['error']['hasRights'])): ?>
+                                        <p>Недостаточно прав</p>
+                                    <? endif; ?>
+
+                                    <? if (!empty($result['error']['not_existed_user'])): ?>
+                                        <p>Пользователь с e-mail, указанным в списке, не зарегистрирован</p>
+                                    <? endif; ?>
+
+                                    <? if (!empty($result['error']['data']['title'])): ?>
+                                        <p>Введите название</p>
+                                    <? endif; ?>
+
+                                    <? if (!empty($result['error']['data']['text'])): ?>
+                                        <p>Добавьте краткое описание</p>
+                                    <? endif; ?>
+
+                                    <? if (!empty($result['error']['data']['heading'])): ?>
+                                        <p>Введите направление</p>
+                                    <? endif; ?>
+
+
+                                    <? if (!empty($result['error']['file']['avatar'])): ?>
+                                        <p>Ошибка загрузки файла</p>
+                                    <? endif; ?>
+
+                                </div>
+                            <? endif; ?>
+                            
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="blog-creation-title">Название</label>
+                                <div class="col-xs-8">
+                                    <input type="text" value="<?= isset($blog['title']) ? $blog['title'] : '' ?>" name="title" id="blog-creation-title" class="large form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="blog-creation-heading">Направление</label>
+                                <div class="col-xs-8">
+
+
+                                    <? foreach($headings as $heading): ?>
+                                        <input type="checkbox" name="headings[]" value="<?=$heading['id']?>"><?=$heading['name']?></input><br>
+                                    <? endforeach; ?>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="blog-creation-heading">Предметы</label>
+                                <div class="col-xs-8">
+
+
+                                    <? foreach($subjects as $subject): ?>
+                                        <input type="checkbox" name="subjects[]" value="<?=$subject['id']?>"><?=$subject['name']?></input><br>
+                                    <? endforeach; ?>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="profile-update-type">Обложка</label>
+                                <div class="col-xs-8">
+                                    <input name="avatar" type="file" >
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="blog-creation-emails">Краткое описание</label>
+                                <div class="col-xs-8">
+                                    <textarea class="large form-control" name="text" id="blog-creation-emails"><?= isset($blog['text']) ? $blog['text'] : '' ?></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="blog-creation-emails">Email соавторов<br>(через пробел)</label>
+                                <div class="col-xs-8">
+                                    <textarea class="large form-control" name="emails" id="blog-creation-emails"><?= isset($blog['emails']) ? $blog['emails'] : '' ?></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-xs-8 col-xs-offset-4">
+                                    <button class="button" name="submit" value="1">Сохранить</button>
+                                </div>
+                            </div>
+                        </form>
+
+                <? endif; ?>
+
+
+            </div>
+        </div>
+
+    <? endif; ?>
+</div>

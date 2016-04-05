@@ -1,0 +1,71 @@
+<?
+extract([
+    'classes' => '',
+    'type' => 'blog',
+], EXTR_SKIP);
+
+if ($logged_user && $type == 'blog') {
+    $render_action = true;
+    $action_text = 'Создать пост';
+    $action_url = '/posts/create';
+} else if ($type == 'project' && $user_can_create_projects) {
+    $render_action = true;
+    $action_text = 'Создать проект';
+    $action_url = '/projects/create';
+} else {
+    $render_action = false;
+}
+?>
+
+<div class="filters <?= $classes ?>">
+    <div class="container">
+        <div class="filters-content">
+            <!-- Type -->
+            <!-- <ul class="filters-type row">
+                <li class="col-2 col-offset-4">
+                    <label class="button-input full-width">
+                        <input type="radio" name="type" value="feed" checked>
+                        <span class="button button-type button-lg full-width">Моя лента</span>
+                    </label>
+                </li>
+                <li class="col-2">
+                    <label class="button-input full-width">
+                        <input type="radio" name="type" value="all">
+                        <span class="button button-type button-lg full-width">Все блоги</span>
+                    </label>
+                </li>
+            </ul> -->
+            <!-- /Type -->
+        
+            <!-- Areas -->
+            <? $this->partial('partials/area-chooser', [
+                'classes' => 'filters-areas',
+                'type' => 'checkbox'
+            ]); ?>
+            <!-- /Areas -->
+            
+            <!-- Subjects -->
+            <!-- <h3 class="filters-heading">Предметы</h3>
+            
+            <div class="row">
+                <div class="col-8 col-offset-2">
+                    <? $this->partial('partials/subject-chooser', [
+                        'classes' => 'filters-subjects row',
+                        'item_classes' => 'col-3'
+                    ]); ?>
+                </div>
+            </div> -->
+            <!-- /Subjects -->
+        </div>
+        
+        <!-- Shrink -->
+        <!-- <span class="filters-shrink" data-alt-text="Развернуть фильтры">Свернуть фильтры</span> -->
+        <!-- /Shrink -->
+        
+        <? if ($render_action): ?>
+            <div class="filters-actions">
+                <a href="<?= $action_url ?>"><?= $action_text ?></a>
+            </div>
+        <? endif ?>
+    </div>
+</div>

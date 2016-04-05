@@ -1,0 +1,159 @@
+<?php
+$is_logged_user = $logged_user && $user['id'] == $logged_user['id'];
+?>
+
+<!-- Page header -->
+<div class="page-header profile-header" <?= !empty($user['background']) ? 'style="background-image: url(\'/upload/' . $user['background'] . '\')"' : '' ?>>
+    <div class="container">
+        <div class="page-header-inner">
+            <div class="page-header-top">
+                <div class="page-header-cell page-header-user">
+                    <img src="<?= Helper::avatarUrl($user['avatar'], 50) ?>" width="50" height="50" class="avatar">
+                    <h1 class="page-header-title"><?= $user['first_name'] ?> <?= $user['second_name'] ?></h1>
+                </div>
+            </div>
+                
+            <div class="page-header-bottom">
+                <div class="page-header-cell"></div>
+                
+                <? if ($is_logged_user || $logged_user['group'] == 1):  ?>
+                    <div class="page-header-cell page-header-cell-right page-header-items">
+                        <? if ($is_logged_user):  ?>
+                            <a href="/profile/update" class="icon-edit-white" title="Редактировать профиль"></a>
+                        <? elseif ($logged_user['group'] == 1): ?>
+                            <a href="/users/<?= $user['id'] ?>/update" class="icon-edit-white" title="Редактировать пользователя"></a>
+                        <? endif; ?>
+                        
+                        <? if ($logged_user['group'] == 1 && !$is_logged_user): ?>
+                            <a href="/users/<?= $user['id'] ?>/delete" class="icon-delete-white" title="Удалить пользователя"></a>
+                        <? endif; ?>
+                    </div>
+                <? endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page header -->
+
+<div class="profile">
+    <!-- Info -->
+	<div class="profile-info">
+        <div class="container">
+            <p class="profile-info-item">
+                <span class="profile-info-item-caption">Зарегистрирован</span>
+                <span class="profile-info-item-value"><?= mb_strtolower(Helper::formatDate('%e %q %Y', $user['registration_time'])) ?></span>
+            </p>
+
+			<ul class="profile-social">
+                <? if (!empty($user['email'])): ?>
+                    <li>
+                        <i class="icon icon-email-gray"></i>
+                        <a href="mailto:<?= $user['email'] ?>"><?= $user['email'] ?></a>
+                    </li>
+                <? endif; ?>
+                
+                <? if (!empty($user['phone'])): ?>
+                    <li>
+                        <i class="icon icon-phone-gray"></i>
+                        <a href="tel:<?= $user['phone'] ?>"><?= $user['phone'] ?></a>
+                    </li>
+                <? endif; ?>
+                
+                <? if (!empty($user['skype'])): ?>
+                    <li>
+                        <i class="icon icon-skype-gray"></i>
+                        <a href="skype:<?= $user['skype'] ?>"><?= $user['skype'] ?></a>
+                    </li>
+                <? endif; ?>
+                
+                <? if (!empty($user['vk'])): ?>
+                    <li>
+                        <i class="icon icon-vk-gray"></i>
+                        <a href="http://vk.com/<?= $user['vk'] ?>"><?= $user['vk'] ?></a>
+                    </li>
+                <? endif; ?>
+            </ul>
+        </div>
+	</div>
+    <!-- /Info -->
+    
+    <!-- Main -->
+    <? if ($posts || $projects || $commentaries): ?>
+        <div class="profile-main">
+            <div class="container">
+                <div class="columns tabs">
+                    <div class="columns-sidebar sidebar">
+                        <ul class="entry-list-filters filters">
+                            <? if ($posts): ?>
+                                <li>
+                                    <button class="filters-trigger filters-trigger-posts tabs-trigger active">Посты</button>
+                                </li>
+                            <? endif ?>
+                            
+                            <? if ($projects): ?>
+                                <li>
+                                    <button class="filters-trigger filters-trigger-projects tabs-trigger <?= $posts ? '' : 'active' ?>">Проекты</button>
+                                </li>
+                            <? endif ?>
+                            
+                            <? if ($commentaries): ?>
+                                <li>
+                                    <button class="filters-trigger filters-trigger-comments tabs-trigger <?= ($posts || $projects) ? '' : 'active' ?>">Комментарии</button>
+                                </li>
+                            <? endif ?>
+                        </ul>
+                    </div>
+                    <div class="columns-main">
+                        <!-- Posts -->
+                        <? if ($posts): ?>
+                            <div class="tabs-content active">
+                                <? if ($posts): ?>
+                                    <? $this->view->partial('partials/entry-list', [
+                                        'items' => $posts
+                                    ]) ?>
+                                <? else: ?>
+                                    <p>Постов нет</p>
+                                <? endif; ?>
+                            </div>
+                        <? endif ?>
+                        <!-- /Posts -->
+                        
+                        <!-- Projects -->
+                        <? if ($projects): ?>
+                            <div class="tabs-content <?= $posts ? '' : 'active' ?>">
+                                <? $this->view->partial('partials/entry-list', [
+                                    'items' => $projects,
+                                    'type' => 'project',
+                                    'render_more' => false
+                                ]) ?>
+                            </div>
+                        <? endif ?>
+                        <!-- /Projects -->
+                        
+                        <!-- Comments -->
+                        <? if ($commentaries): ?>
+                            <div class="tabs-content <?= ($posts || $projects) ? '' : 'active' ?>">
+                                <ol class="profile-comments">
+                                    <? $commentaries = array_slice($commentaries, 0, 5); ?>
+                                    <? foreach ($commentaries as $comment): ?>
+                                        <li>
+                                            <h3 class="profile-comment-title">
+                                                <a href="/posts/<?= $comment['post'] ?>"><?= $comment['post_title'] ?></a>
+                                            </h3>
+                                            <p class="profile-comment-date"><?= Helper::formatDate('%e %q %Y', $comment['creation_time'])  ?></p>
+                                            <div class="profile-comment-body">
+                                                <?= Helper::truncateString($comment['text'], 250) ?>
+                                            </div>
+                                        </li>
+                                    <? endforeach; ?>
+                                </ol>
+                            </div>
+                        <? endif ?>
+                        <!-- /Comments -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    <? endif; ?>
+    <!-- /Main -->
+</div>

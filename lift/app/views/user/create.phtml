@@ -1,0 +1,147 @@
+<?php
+function generateUserGroupOptions($user_groups, $selected_group) {
+    if (empty($user_groups)) {
+        return '';
+    }
+
+    $result = '';
+
+    foreach ($user_groups as $user_group) {
+        $result .= '<option';
+
+        if ($selected_group == $user_group['id']) {
+            $result .= ' selected';
+        }
+
+        $result .= ' value="' . $user_group['id'] . '">' . $user_group['name'] . '</option>';
+    }
+
+    return $result;
+}
+?>
+
+<!-- Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="page-header-inner">
+            <h1 class="page-header-title">Создание пользователя</h1>
+        </div>
+    </div>
+</div>
+<!-- Header -->
+
+<div class="container">
+    <div class="row">
+        <form class="col-9" method="post" enctype="multipart/form-data" >
+            <? if (!empty($result['success'])): ?>
+                <div class="alert alert-success">
+                    <p>Пользователь создан</p>
+                </div>
+            <? elseif (!empty($result['error'])): ?>
+                <div class="alert alert-error">
+                    <? if (!empty($result['error']['hasRights'])): ?>
+                        <p>Недостаточно прав</p>
+                    <? endif; ?>
+
+                    <? if (!empty($result['error']['existed_user'])): ?>
+                        <p>Пользователь с таким адресом электронной почты уже существует</p>
+                    <? endif; ?>
+
+                    <? if (!empty($result['error']['database']['pg_update'])): ?>
+                        <p>Невозможно обновить базу данных</p>
+                    <? endif; ?>
+
+                    <? if (!empty($result['error']['data']['first_name'])): ?>
+                        <p>Введите имя</p>
+                    <? endif; ?>
+
+                    <? if (!empty($result['error']['data']['middle_name'])): ?>
+                        <p>Введите отчество</p>
+                    <? endif; ?>
+
+                    <? if (!empty($result['error']['data']['second_name'])): ?>
+                        <p>Введите фамилию</p>
+                    <? endif; ?>
+
+                    <? if (!empty($result['error']['data']['email'])): ?>
+                        <p>Введите email</p>
+                    <? endif; ?>
+
+                    <? if (!empty($result['error']['data']['type'])): ?>
+                        <p>Введите тип</p>
+                    <? endif; ?>
+
+                    <? if (!empty($result['error']['data']['data'])): ?>
+                        <p>Введите данные JSON</p>
+                    <? endif; ?>
+
+                 </div>
+            <? endif; ?>
+            
+            <div class="form-item row">
+                <label class="col-4 control-label" for="user-creation-first-name">Имя:</label>
+                <div class="col-8">
+                    <input type="text" value="<?= isset($user['first_name']) ? $user['first_name'] : '' ?>" name="first_name" id="user-creation-first-name" class="text-field text-field-lg full-width">
+                </div>
+            </div>
+
+            <div class="form-item row">
+                <label class="col-4 control-label" for="user-creation-middle-name">Отчество:</label>
+                <div class="col-8">
+                    <input type="text" value="<?= isset($user['middle_name']) ? $user['middle_name'] : '' ?>" name="middle_name" id="user-creation-middle-name" class="text-field text-field-lg full-width">
+                </div>
+            </div>
+
+            <div class="form-item row">
+                <label class="col-4 control-label" for="user-creation-second-name">Фамилия:</label>
+                <div class="col-8">
+                    <input type="text" value="<?= isset($user['second_name']) ? $user['second_name'] : '' ?>" name="second_name" id="user-creation-second-name" class="text-field text-field-lg full-width">
+                </div>
+            </div>
+
+            <div class="form-item row">
+                <label class="col-4 control-label" for="user-creation-email">Email:</label>
+                <div class="col-8">
+                    <input type="email" value="<?= isset($user['email']) ? $user['email'] : '' ?>" name="email" id="user-creation-email" class="text-field text-field-lg full-width">
+                </div>
+            </div>
+
+            <div class="form-item row">
+                <label class="col-4 control-label" for="user-creation-password">Пароль:</label>
+                <div class="col-8">
+                    <input type="password" value="<?= isset($user['password']) ? $user['password'] : '' ?>" name="password" id="user-creation-password" class="text-field text-field-lg full-width">
+                </div>
+            </div>
+
+            <div class="form-item row">
+                <label class="col-4 control-label" for="user-creation-group">Группа:</label>
+                <div class="col-8">
+                    <select class="select select-lg full-width" name="group" id="user-creation-group">
+                        <?= generateUserGroupOptions($user_groups, (!empty($user) ? $user['group'] : null)) ?>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-item row">
+                <label class="col-4 control-label" for="user-creation-type">Тип:</label>
+                <div class="col-8">
+                    <input type="text" value="<?= isset($user['type']) ? $user['type'] : '' ?>" name="type" id="user-creation-type" class="text-field text-field-lg full-width">
+                </div>
+            </div>
+
+
+            <div class="form-item row">
+                <label class="col-4 control-label" for="profile-update-type">Данные JSON:</label>
+                <div class="col-8">
+                    <textarea  name="data" id="profile-update-type" class="text-area text-area-lg full-width"><?= isset($user['data']) ? $user['data'] : '' ?></textarea>
+                </div>
+            </div>
+
+            <div class="form-item row">
+                <div class="col-4 col-offset-4">
+                    <button class="button button-lg full-width" name="submit" value="1">Сохранить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

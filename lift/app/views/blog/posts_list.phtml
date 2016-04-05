@@ -1,0 +1,86 @@
+<?
+$logged_user = $this->session->get('logged_user') ? $this->session->get('logged_user')['success'] : null;
+
+function removeDuplicatePosts($posts) {
+    $ids = [];
+    $result = [];
+
+    foreach ($posts as $post) {
+        if (!in_array($post['id'], $ids)) {
+            $ids[] = $post['id'];
+            $result[] = $post;
+        }
+    }
+
+    return $result;
+}
+?>
+
+<h1>Блог</h1>
+
+<? if( !empty($logged_user['id'] && ( $blog['administrator']==$logged_user['id'] || $logged_user['group']==1  || in_array($logged_user['id'], $hasRights)    ))):  ?>
+    <a href="/posts/create" class="btn btn-default" title="Создать пост">Создать пост</a>
+<? endif; ?>
+
+<br>
+
+<? if (isset($pagination['count']) && $pagination['count'] > 1): ?>
+    <ul class="pagination">
+        <? if ($pagination['last']): ?>
+            <li><a href="/blog/posts_list/<?= $blog['id'] ?>/<?= $pagination['last'] ?>">&laquo;</a></li>
+        <? else: ?>
+            <li class="disabled"><span>&laquo;</span></li>
+        <? endif; ?>
+
+        <? for ($i = 1; $i <= $pagination['count']; $i++): ?>
+            <li <?= ($pagination['page'] == $i) ? 'class="active"' : '' ?>>
+                <a href="/blog/posts_list/<?= $blog['id'] ?>/<?= $i ?>/"><?= $i ?></a>
+            </li>
+        <? endfor; ?>
+
+        <? if ($pagination['next']): ?>
+            <li><a href="/blog/posts_list/<?= $blog['id'] ?>/<?= $pagination['next'] ?>">&raquo;</a></li>
+        <? else: ?>
+            <li class="disabled"><span>&raquo;</span></li>
+        <? endif; ?>
+    </ul>
+<? endif; ?>
+
+<br>
+
+
+
+
+<? if (!empty($posts)): ?>
+    <? $posts = removeDuplicatePosts($posts); ?>
+
+    <div class="post-list">
+        <? foreach ($posts as $post): ?>
+
+            <article class="post">
+                <h3 class="post-title">
+                    <a href="/blog/post/<?=$post['id']?>"><?= $post['title']?></a>
+                    Время создания: <?=$post['creation_time']?>"><br>
+                    Количество просмотров: <?=$post['amountOfViews']?><br>
+
+                    <?php if(!empty($logged_user['id'] &&  ( $blog['administrator']==$logged_user['id']  || $logged_user['group']==1   || in_array($logged_user['id'], $hasRights) ) )) { ?>
+                        <span class="post-actions">
+                            <a href="/blog/post_update/<?=$post['id']?>" class="btn btn-default btn-icon" title="Редактировать пост"><i class="fa fa-pencil"></i></a>
+                            <a href="/blog/post_delete/<?=$post['id']?>" class="btn btn-default btn-icon" title="Удалить пост"><i class="fa fa-times"></i></a>
+                        </span>
+                    <?php };?>
+                </h3>
+
+                <div class="post-body"><?= $post['text'] ?></div>
+            </article>
+
+        <? endforeach; ?>
+    </div>
+
+<? else: ?>
+
+    <p>
+        <p>Постов пока нет</p>
+    </p>
+
+<? endif; ?>

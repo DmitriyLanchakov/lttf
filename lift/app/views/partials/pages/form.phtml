@@ -1,0 +1,76 @@
+<?
+extract([
+    'classes' => '',
+    'type' => 'create'
+], EXTR_SKIP);
+?>
+
+<form action="" class="form form-lg <?= $classes ?>" method="POST">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="page-header-inner">
+                <h1 class="page-header-title"><?= ($type == 'create') ? 'Создание' : 'Редактирование' ?> страницы</h1>
+            </div>
+        </div>
+    </div>
+    <!-- Header -->
+    
+    <div class="container">
+        <!-- Messages -->
+        <? if (!empty($result['success'])): ?>
+            <div class="form-message alert alert-success">
+                <p>Страница <?= ($type == 'create') ? 'создана' : 'обновлена' ?></p>
+            </div>
+        <? elseif (!empty($result['error'])): ?>
+            <div class="form-message alert alert-error">
+                <? if (!empty($result['error']['hasRights'])): ?>
+                    <p>Недостаточно прав</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['database']['pg_insert'])): ?>
+                    <p>Невозможно обновить базу данных</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['title'])): ?>
+                    <p>Введите заголовок</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['text'])): ?>
+                    <p>Введите текст записи</p>
+                <? endif; ?>
+            </div>
+        <? endif ?>
+        <!-- /Messages -->
+        
+        <!-- Title -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="page-form-title">Заголовок</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($page['title']) ? $page['title'] : '' ?>" name="title" id="page-form-title" maxlength="100">
+            </div>
+        </div>
+        <!-- /Title -->
+        
+        <!-- Text -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="page-form-text">Текст</label>
+            </div>
+            <div class="form-item-body">
+                <textarea class="full-width wysiwyg wysiwyg-advanced" name="text" id="page-form-text" rows="25"><?= isset($page['text']) ? $page['text'] : '' ?></textarea>
+            </div>
+        </div>
+        <!-- /Text -->
+        
+        <!-- Footer -->
+        <div class="form-footer row">
+            <div class="col-6 col-offset-3">
+                <button class="button button-lg full-width" name="submit" value="1"><?= ($type == 'create') ? 'Создать' : 'Обновить' ?> страницу</button>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </div>
+</form>

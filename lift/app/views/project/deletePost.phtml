@@ -1,0 +1,17 @@
+
+
+<? if (!empty($result['success'])): ?>
+
+    <p class="alert alert-success">Запись удалена</p>
+
+<? elseif (!empty($result['error'])): ?>
+
+    <div class="alert alert-danger">
+        <p>Запись не удалена</p>
+
+        <? if (!empty($result['error']['hasRights'])): ?>
+            <p>Недостаточно прав</p>
+        <? endif; ?>
+    </div>
+
+<? endif; ?>

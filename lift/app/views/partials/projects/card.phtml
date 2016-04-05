@@ -1,0 +1,96 @@
+<?
+extract([
+    'classes' => '',
+    'attrs' => null
+], EXTR_SKIP);
+
+if (empty($item['id'])) {
+    return;
+}
+
+$administrator = Helper::resolveRelations($users, $item['administrator'])[0];
+$coauthors = (!empty($item['users'][1])) ? Helper::resolveRelations($users, $item['users'][1]) : null;
+$participants = (!empty($item['users'][2])) ? Helper::resolveRelations($users, $item['users'][2]) : null;
+
+$areas = Helper::resolveRelations($headings, $item['heading']);
+$main_area = !empty($areas) ? $areas[0] : null;
+
+if ($main_area) {
+    $classes .= ' entry-card-area-' . $main_area['id'];
+}
+
+$attrs_str = '';
+if (is_array($attrs)) {
+    foreach ($attrs as $key => $value) {
+        $attrs_str .= $key . '="' . $value . '" ';
+    }
+}
+
+$url = '/projects/' . $item['id'];
+?>
+
+<div class="entry-card <?= $classes ?>" <?= $attrs_str ?>>
+    <!-- Category -->
+    <p class="entry-card-category">
+        Проекты:<?= $main_area ? ' <span class="entry-card-area">' . $main_area['name'] . '</span>' : '' ?>
+    </p>
+    <!-- /Category -->
+    
+    <!-- Header -->
+    <div class="entry-card-header clearfix">
+        <div class="entry-card-header-meta">
+            <a href="/users/<?= $administrator['id'] ?>" class="entry-card-avatar">
+                <img src="<?= Helper::avatarUrl($administrator['avatar']) ?>" class="avatar" width="60" height="60">
+            </a>
+            <p class="entry-card-date"><?= mb_strtolower(Helper::formatDate('%e %q %Y', $item['creation_time'])) ?></p>
+            <p class="entry-card-author">
+                <a href="/users/<?= $administrator['id'] ?>"><?= $administrator['first_name'] ?><br><?= $administrator['second_name'] ?></a>
+            </p>
+        </div>
+        <h3 class="entry-card-main-title">
+            <a href="<?= $url ?>"><?= $item['title'] ?></a>
+        </h3>
+    </div>
+    <!-- /Header -->
+    
+    <!-- Body -->
+    <div class="entry-card-body">
+        <!-- Thumb -->
+        <? if (!empty($item['avatar'])): ?>
+            <a class="entry-card-thumb" href="<?= $url ?>">
+                <img src="/image/zoom2/170x128/upload/<?= $item['avatar'] ?>" alt="">
+            </a>
+        <? endif ?>
+        <!-- /Thumb -->
+        
+        <!-- Description -->
+        <div class="entry-card-content"><?= Helper::truncateString($item['description'], 200) ?></div>
+        <!-- /Description -->
+        
+        <!-- Participants -->
+        <? if ($coauthors || $participants): ?>
+            <div class="entry-card-participants">
+                <h3>
+                    <? if ($coauthors && $participants): ?>
+                        Соавторы и участники:
+                    <? elseif ($coauthors): ?>
+                        Соавторы:
+                    <? else: ?>
+                        Участники:
+                    <? endif ?>
+                </h3>
+                <ul>
+                    <? foreach (array_merge((array) $coauthors, (array) $participants) as $user): ?>
+                        <li>
+                            <a href="/users/<?= $user['id'] ?>">
+                                <img src="<?= Helper::avatarUrl($user['avatar'], 45) ?>" class="avatar" width="45" height="45">
+                            </a>
+                        </li>
+                    <? endforeach ?>
+                </ul>
+            </div>
+        <? endif ?>
+        <!-- /Participants -->
+    </div>
+    <!-- /Body -->
+</div>

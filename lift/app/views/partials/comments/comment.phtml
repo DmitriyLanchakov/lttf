@@ -1,0 +1,45 @@
+<?
+extract([
+    'classes' => '',
+    'user_can_delete_commentaries' => false,
+    'type' => 'blog_post'
+], EXTR_SKIP);
+
+switch ($type) {
+    case 'blog_post':
+        $delete_url = '/blog/deleteCommentary';
+    break;
+    
+    case 'project_post':
+        $delete_url = '/project/deleteCommentary';
+    break;
+    
+    case 'task':
+        $delete_url = '/project/deleteTskCommentary';
+    break;
+}
+?>
+
+<div class="comment <?= $classes ?>" data-comment-id="<?= $comment['id'] ?>">
+    <div class="col-5 comment-meta">
+        <img class="comment-avatar avatar" src="<?= Helper::avatarUrl($comment['avatar']) ?>" width="60" height="60">
+
+        <p class="comment-author">
+            <a class="comment-author-inner" href="/users/<?= $comment['user'] ?>">
+                <?= $comment['first_name'] . ' ' . $comment['second_name'] ?>
+            </a>
+        </p>
+        
+        <p class="comment-date"><?= mb_strtolower(Helper::formatDate('%e %q %Y', $comment['creation_time'])) ?></p>
+    </div>
+    
+    <div class="col-8 comment-body">
+        <?= $comment['text'] ?>
+    </div>
+    
+    <div class="col-3 comment-actions">
+        <? if ($user_can_delete_commentaries): ?>
+            <a class="comment-delete" href="<?= $delete_url ?>" title="Удалить">Удалить</a>
+        <? endif ?>
+    </div>
+</div>

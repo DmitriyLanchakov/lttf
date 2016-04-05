@@ -1,0 +1,20 @@
+<div class="layout">
+    <? if (!empty($result['success'])): ?>
+
+        <div class="alert alert-success">
+            <p>Блог удалён</p>
+        </div>
+
+    <? elseif (!empty($result['error'])): ?>
+
+        <div class="alert alert-danger">
+            <p>Блог не удалён</p>
+
+            <? if (!empty($result['error']['hasRights'])): ?>
+                <p>Недостаточно прав</p>
+            <? endif; ?>
+        </div>
+
+    <? endif; ?>
+
+</div>

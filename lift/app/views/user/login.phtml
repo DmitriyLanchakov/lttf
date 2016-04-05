@@ -1,0 +1,46 @@
+<div class="container">
+    <? if ($logged_user): ?>
+        <div class="alert alert-success" style="margin-top: 20px;">
+            <p>Вы вошли как <?= $logged_user['first_name'] ?> <?= $logged_user['second_name'] ?></p>
+        </div>
+    <? else: ?>
+        <div class="centered-layout">
+            <h1 class="page-heading">Вход</h1>
+            
+            <form class="form" method="post" novalidate>
+                <? if (!empty($result['error'])): ?>
+                <div class="form-message alert alert-error">
+                    <? if (!empty($result['error']['condition']['email'])): ?>
+                        <p>Введите email</p>
+                    <? endif; ?>
+
+                    <? if (!empty($result['error']['condition']['password'])): ?>
+                        <p>Введите пароль</p>
+                    <? endif; ?>
+
+                    <? if (!empty($result['error']['no_user'])): ?>
+                        <p>Неверный email или пароль</p>
+                    <? endif; ?>
+                </div>
+                <? endif; ?>
+
+                <input type="hidden" name="referer" value="<?= !empty($referer) ? $referer : '' ?>">
+                <div class="form-item">
+                    <input class="text-field text-field-lg full-width" type="email" name="email" placeholder="Email" value="<?= isset($email) ? $email : '' ?>">
+                </div>
+                <div class="form-item">
+                    <input class="text-field text-field-lg full-width" type="password" name="password" placeholder="Пароль">
+                </div>
+                <div class="form-item">
+                    <button class="button button-lg full-width" name="submit" value="1">Войти</button>
+                </div>
+
+                <? if (empty($amountofusers)): ?>
+                    <p style="margin-top: 20px"><a href="/user/createsuperuser">Создать суперпользователя</a></p>
+                <? endif; ?>
+            </form>
+        </div>
+    <? endif; ?>
+</div>
+
+

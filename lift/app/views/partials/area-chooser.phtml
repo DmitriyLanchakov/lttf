@@ -1,0 +1,13 @@
+<?
+extract([
+    'classes' => '',
+    'item_classes' => '',
+    'selected' => null
+], EXTR_SKIP);
+?>
+
+<select class="select" name="heading">
+    <? foreach ($headings as $heading): ?>
+        <option value="<?= $heading['id'] ?>" <?= ($selected == $heading['id']) ? 'selected' : '' ?>><?= $heading['name'] ?></option>
+    <? endforeach ?>
+</select>

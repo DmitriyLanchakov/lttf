@@ -1,0 +1,36 @@
+<?
+extract([
+    'classes' => ''
+], EXTR_SKIP);
+
+if (empty($item['id'])) {
+    return;
+}
+
+if (empty($item['user_id']) && !empty($user)) {
+    $item['user_id'] = $user['id'];
+    $item['user_avatar'] = $user['avatar'];
+    $item['first_name'] = $user['first_name'];
+    $item['second_name'] = $user['second_name'];
+}
+
+$main_area = Helper::resolveRelations($headings, $item['heading']);
+
+if (!empty($main_area)) {
+    $classes .= ' project-card-area-' . $main_area[0]['id'];
+}
+?>
+
+<div class="project-card <?= $classes ?>">
+    <!-- Category -->
+    <p class="project-card-category"><?= !empty($main_area) ? $main_area[0]['name'] : '' ?></p>
+    <!-- /Category -->
+    
+    <!-- Header -->
+    <div class="project-card-header clearfix">
+        <h3 class="project-card-title">
+            <a href="/project/posts_list/<?= $item['id'] ?>"><?= $item['title'] ?></a>
+        </h3>
+    </div>
+    <!-- /Header -->
+</div>

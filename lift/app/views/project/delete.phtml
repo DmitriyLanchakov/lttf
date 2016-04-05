@@ -1,0 +1,15 @@
+<div class="container">
+    <? if (!empty($result['success'])): ?>
+        <div class="alert alert-success">
+            <p>Проект удален</p>
+        </div>
+    <? elseif (!empty($result['error'])): ?>
+        <div class="alert alert-danger">
+            <p>Проект не удален</p>
+
+            <? if (!empty($result['error']['hasRights'])): ?>
+                <p>Недостаточно прав</p>
+            <? endif; ?>
+        </div>
+    <? endif; ?>
+</div>

@@ -1,0 +1,104 @@
+<?
+extract([
+    'classes' => '',
+    'attrs' => null
+], EXTR_SKIP);
+
+if (empty($item['id'])) {
+    return;
+}
+
+if (empty($item['user_id'])) {
+    if (empty($user) && empty($users)) {
+        return;
+    }
+    
+    if (empty($user)) {
+        $user = Helper::resolveRelations($users, $item['user'])[0];
+    }
+    
+    $item['user_id'] = $user['id'];
+    $item['user_avatar'] = $user['avatar'];
+    $item['first_name'] = $user['first_name'];
+    $item['second_name'] = $user['second_name'];
+}
+
+if (!empty($item['project'])) {
+    $url = '/projects/' . $item['project'] . '/posts/' . $item['id'];
+} else {
+    $url = '/posts/' . $item['id'];
+}
+
+    
+if (!empty($item['headings'])) {
+    $areas = Helper::resolveRelations($headings, $item['headings'], 'heading');
+} else if (!empty($item['heading'])) {
+    $areas = Helper::resolveRelations($headings, $item['heading']);
+}
+$main_area = !empty($areas) ? $areas[0] : null;
+
+if ($main_area) {
+    $classes .= ' entry-card-area-' . $main_area['id'];
+}
+
+$attrs_str = '';
+if (is_array($attrs)) {
+    foreach ($attrs as $key => $value) {
+        $attrs_str .= $key . '="' . $value . '" ';
+    }
+}
+?>
+
+<div class="entry-card <?= $classes ?>" <?= $attrs_str ?>>
+    <!-- Category -->
+    <p class="entry-card-category">
+        <?= (!empty($item['project'])) ? 'Проекты' : 'Блоги' ?><?= $main_area ? ': <span class="entry-card-area">' . $main_area['name'] . '</span>' : '' ?>
+    </p>
+    <!-- /Category -->
+    
+    <!-- Header -->
+    <div class="entry-card-header clearfix">
+        <a href="/users/<?= $item['user_id'] ?>" class="entry-card-avatar">
+            <img src="<?= Helper::avatarUrl($item['user_avatar']) ?>" class="avatar" width="60" height="60">
+        </a>
+        <p class="entry-card-date"><?= mb_strtolower(Helper::formatDate('%e %q %Y', $item['creation_time'])) ?></p>
+        <p class="entry-card-author">
+            <a href="/users/<?= $item['user_id'] ?>"><?= $item['first_name'] ?><br><?= $item['second_name'] ?></a>
+        </p>
+    </div>
+    <!-- /Header -->
+    
+    <!-- Thumb -->
+    <? if (!empty($item['avatar'])): ?>
+        <a class="entry-card-thumb" href="<?= $url ?>">
+            <img src="/image/zoom2/220x165/upload/<?= $item['avatar'] ?>" alt="">
+        </a>
+    <? endif ?>
+    <!-- /Thumb -->
+    
+    <!-- Body -->
+    <div class="entry-card-body">
+        <!-- Title -->
+        <h3 class="entry-card-title">
+            <a href="<?= $url ?>"><?= $item['title'] ?></a>
+        </h3>
+        <!-- /Title -->
+
+        <!-- Content -->
+        <div class="entry-card-content"><?= (!empty($item['annotation'])) ? $item['annotation'] : Helper::truncateString($item['text'], 200) ?></div>
+        <!-- /Content -->
+        
+        <!-- Meta -->
+        <p class="entry-card-meta">
+            <? if (isset($item['commentary_amount'])): ?>
+                <span class="entry-card-comments"><?= $item['commentary_amount'] ?></span>
+            <? endif ?>
+            
+            <? if (isset($item['views_amount'])): ?>
+                <span class="entry-card-views"><?= $item['views_amount'] ?></span>
+            <? endif ?>
+        </p>
+        <!-- /Meta -->
+    </div>
+    <!-- /Body -->
+</div>

@@ -1,0 +1,24 @@
+<!-- Header -->
+<div class="post-header">
+    <!-- Meta -->
+    <p class="post-meta">
+        <span class="post-views"><?= $post['views'] ?></span>
+        <span class="post-date"><?= mb_strtolower(Helper::formatDate('%e %q %Y', $post['creation_time'])) ?></span>
+    </p>
+    <!-- /Meta -->
+    
+    <!-- Title -->
+    <h1 class="post-title"><?= $post['title'] ?></h1>
+    <!-- /Title -->
+</div>
+<!-- /Header -->
+
+
+<!-- Body -->
+<div class="post-body">
+    <? if (!empty($post['annotation'])): ?>
+        <div class="post-annotation"><?= $post['annotation'] ?></div>
+    <? endif ?>
+    <div class="post-text formatted"><?= $post['text'] ?></div>
+</div>
+<!-- /Body -->

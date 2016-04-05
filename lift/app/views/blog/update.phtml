@@ -1,0 +1,176 @@
+<?
+
+
+$logged_user = $this->session->get('logged_user') ? $this->session->get('logged_user')['success'] : null;
+
+function generateBlogHeadingOptions($headings, $selected_heading) {
+    if (empty($headings)) {
+        return '';
+    }
+
+    $result = '';
+
+    foreach ($headings as $heading) {
+        $result .= '<option';
+
+        if ($selected_heading == $heading['id']) {
+            $result .= ' selected';
+        }
+
+        $result .= ' value="' . $heading['id'] . '">' . $heading['name'] . '</option>';
+    }
+
+    return $result;
+}
+?>
+
+<div class="layout">
+    <? if (!empty($logged_user['id']) && ($blog['administrator'] == $logged_user['id'] || $logged_user['group'] == 1)):  ?>
+
+        <h2>Редактирование блога</h2>
+
+        <div class="row">
+            <div class="col-xs-6">
+                <form class="form-horizontal" method="post" enctype="multipart/form-data" >
+                    <? if (!empty($result['success'])): ?>
+                    
+                        <div class="alert alert-success">
+                            <p>Блог обновлён</p>
+                        </div>
+                        
+                    <? elseif (!empty($result['error'])): ?>
+                        <div class="alert alert-danger">
+                            <? if (!empty($result['error']['database']['pg_insert'])): ?>
+                                <p>Невозможно обновить базу данных</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['hasRights'])): ?>
+                                <p>Недостаточно прав</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['not_existed_user'])): ?>
+                                <p>Пользователь с e-mail, указанным в списке, не зарегистрирован</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['data']['title'])): ?>
+                                <p>Введите название</p>
+                            <? endif; ?>
+
+                            <? if (!empty($result['error']['data']['heading'])): ?>
+                                <p>Введите направление</p>
+                            <? endif; ?>
+
+
+                            <? if (!empty($result['error']['file']['avatar'])): ?>
+                                <p>Ошибка загрузки файла</p>
+                            <? endif; ?>
+                        </div>
+                    <? endif; ?>
+
+
+                    <img src="/upload/<?=$blog['avatar']?>">
+
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label" for="blog-update-title">Название</label>
+                        <div class="col-xs-8">
+                            <input type="text" value="<?= isset($blog['title']) ? $blog['title'] : '' ?>" name="title" id="blog-update-title" class="large form-control">
+                        </div>
+                    </div>
+<!---->
+<!--                    <div class="form-group">-->
+<!--                        <label class="col-xs-4 control-label" for="blog-update-heading">Направление</label>-->
+<!--                        <div class="col-xs-8">-->
+<!--                            <select class="large form-control" name="heading" id="blog-update-heading">-->
+<!--                                --><?//= generateBlogHeadingOptions($headings, $blog['heading']) ?>
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label" for="blog-creation-heading">Направление</label>
+                        <div class="col-xs-8">
+
+                            <? foreach($headings as $heading): ?>
+                                <input type="checkbox" name="headings[]" value="<?=$heading['id']?>"
+
+                                <? foreach($blog['headings'] as $blog_heading): ?>
+                                    <? if($blog_heading['heading']==$heading['id']):?>
+                                        checked
+                                    <? endif;?>
+                                <? endforeach; ?>
+
+
+                                    ><?=$heading['name']?></input><br>
+                            <? endforeach; ?>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label" for="blog-creation-heading">Предметы</label>
+                        <div class="col-xs-8">
+
+
+                            <? foreach($subjects as $subject): ?>
+                                <input type="checkbox" name="subjects[]" value="<?=$subject['id']?>"
+
+                                    <? foreach($blog['subjects'] as $blog_subject): ?>
+                                        <? if($blog_subject['subject']==$subject['id']):?>
+                                            checked
+                                        <? endif;?>
+                                    <? endforeach; ?>
+
+
+
+                                    ><?=$subject['name']?></input><br>
+                            <? endforeach; ?>
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label" for="profile-update-type">Обложка</label>
+                        <div class="col-xs-8">
+                            <input name="avatar" type="file" >
+                        </div>
+                    </div>
+
+
+
+
+                    <? if($blog['type'] == 2): ?>
+
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label" for="blog-update-emails">Email соавторов<br>(через пробел)</label>
+                            <div class="col-xs-8">
+                                <textarea class="large form-control" name="emails" id="blog-update-emails"><?= isset($blog['emails']) ? $blog['emails'] : '' ?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label" for="blog-update-emails">Краткое описание</label>
+                            <div class="col-xs-8">
+                                <textarea class="large form-control" name="text" id="blog-update-emails"><?= isset($blog['text']) ? $blog['text'] : '' ?></textarea>
+                            </div>
+                        </div>
+
+                    <? endif; ?>
+
+                    <div class="form-group">
+                        <div class="col-xs-8 col-xs-offset-4">
+                            <button class="button" name="submit" value="1">Сохранить</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    <? else: ?>
+
+        <p class="alert alert-danger">Вы не можете редактировать блоги</p>
+
+    <? endif; ?>
+</div>

@@ -1,0 +1,75 @@
+<?
+extract([
+    'classes' => '',
+    'attrs' => null
+], EXTR_SKIP);
+
+if (empty($item['id'])) {
+    return;
+}
+
+if (!empty($item['users'][1])) {
+    $responsible = Helper::resolveRelations($users, $item['users'][1])[0];
+} else {
+    $responsible = Helper::resolveRelations($users, [$item['user']])[0];
+}
+
+if (!empty($item['users'][2])) {
+    $participants = Helper::resolveRelations($users, $item['users'][2]);
+}
+
+
+$attrs_str = '';
+if (is_array($attrs)) {
+    foreach ($attrs as $key => $value) {
+        $attrs_str .= $key . '="' . $value . '" ';
+    }
+}
+?>
+
+<div class="task <?= $classes ?>" <?= $attrs_str ?>>
+    <!-- Header -->
+    <div class="task-header">
+        <a href="/users/<?= $responsible['id'] ?>" class="task-user">
+            <img src="<?= Helper::avatarUrl($responsible['avatar']) ?>" class="task-user-avatar avatar" width="50" height="50">
+            <p class="task-user-name"><?= $responsible['first_name'] ?><br><?= $responsible['second_name'] ?></p>
+        </a>
+        <p class="task-date">
+            <?= Helper::formatDate('%d.%m.%Y', $item['start_time']) ?>
+            <?= Helper::formatDate('%d.%m.%Y', $item['end_time']) ?>
+        </p>
+        <p class="task-meta">
+            <span class="task-comments"><?= $item['commentary_amount'] ?></span>
+        </p>
+    </div>
+    <!-- /Header -->
+    
+    <!-- Body -->
+    <div class="task-body">
+        <!-- Title -->
+        <h2 class="task-title">
+            <a href="/projects/<?= $item['project'] ?>/tasks/<?= $item['id'] ?>"><?= $item['title'] ?></a>
+        </h2>
+        <!-- /Title -->
+        
+        <!-- Text -->
+        <div class="task-text"><?= Helper::truncateString($item['text'], 500, '...') ?></div>
+        <!-- /Text -->
+        
+        <!-- Participants -->
+        <? if (!empty($participants)): ?>
+            <ul class="task-participants">
+                <? foreach ($participants as $participant): ?>
+                    <li>
+                        <a href="/users/<?= $participant['id'] ?>" class="task-user">
+                            <img src="<?= Helper::avatarUrl($participant['avatar']) ?>" class="task-user-avatar avatar" width="50" height="50">
+                            <p class="task-user-name"><?= $participant['first_name'] ?><br><?= $participant['second_name'] ?></p>
+                        </a>
+                    </li>
+                <? endforeach ?>
+            </ul>
+        <? endif ?>
+        <!-- /Participants -->
+    </div>
+    <!-- /Body -->
+</div>

@@ -1,0 +1,86 @@
+/*
+    Helpers
+==========================================================*/
+
+.hidden {
+    display: none;
+}
+
+
+/* Clearfix */
+
+.clearfix:before,
+.clearfix:after {
+    content: '';
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+
+
+/* Floats */
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
+
+
+/* Centered */
+
+.centered-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+
+/* Full width */
+
+.full-width {
+    width: 100%;
+}
+
+
+
+/* Vertical align */
+
+.va-top {
+    vertical-align: top;
+}
+
+.va-middle {
+    vertical-align: middle;
+}
+
+.va-bottom {
+    vertical-align: bottom;
+}
+
+.va-baseline {
+    vertical-align: baseline;
+}
+
+
+
+/* Text align */
+
+.ta-left {
+    text-align: left;
+}
+
+.ta-center {
+    text-align: center;
+}
+
+.ta-right {
+    text-align: right;
+}

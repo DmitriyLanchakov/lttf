@@ -1,0 +1,152 @@
+<?
+extract([
+    'classes' => '',
+    'type' => 'create'
+], EXTR_SKIP);
+?>
+
+<form action="" class="<?= $classes ?>" method="POST" enctype="multipart/form-data">
+    <!-- Page header -->
+    <div class="page-header ta-center" id="page-header" <?= !empty($post['background']) ? 'style="background-image: url(\'/upload/' . $post['background'] . '\')"' : '' ?>>
+        <div class="container">
+            <div class="page-header-inner">
+                <div class="page-header-cell va-middle">
+                    <div class="image-button image-uploader" data-image-uploader-preview="#page-header">
+                        <div class="image-button-inner">
+                            <p class="image-button-caption">Загрузить фон</p>
+                            <p class="image-button-hint">до 5 МБ</p>
+                        </div>
+                        <input type="hidden" name="background" value="<?= (!empty($post['background'])) ? $post['background'] : '' ?>">
+                        <input class="image-uploader-input" type="file" name="background">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page header -->
+    
+    <div class="container">
+        <!-- Messages -->
+        <? if (!empty($result['success'])): ?>
+            <div class="form-message alert alert-success">
+                <p>Пост <?= ($type == 'create') ? 'создан' : 'обновлен' ?></p>
+            </div>
+        <? elseif (!empty($result['error'])): ?>
+            <div class="form-message alert alert-error">
+                <? if (!empty($result['error']['hasRights'])): ?>
+                    <p>Недостаточно прав</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['database']['pg_insert'])): ?>
+                    <p>Невозможно обновить базу данных</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['title'])): ?>
+                    <p>Введите заголовок</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['text'])): ?>
+                    <p>Введите текст записи</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['file']['avatar'])): ?>
+                    <p>Ошибка загрузки файла</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['file']['background'])): ?>
+                    <p>Ошибка загрузки файла обложки</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['user'])): ?>
+                    <p>Нет такого пользователя</p>
+                <? endif; ?>
+
+            </div>
+        <? endif ?>
+        <!-- /Messages -->
+
+        <!-- Title -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="post-form-title">Заголовок</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($post['title']) ? $post['title'] : '' ?>" name="title" id="post-form-title" maxlength="255">
+            </div>
+        </div>
+        <!-- /Title -->
+
+
+        <? if ($logged_user['group'] == 1): ?>
+            <!-- User -->
+            <div class="form-item">
+                <div class="form-item-header">
+                    <label class="label" for="post-form-user">Автор</label>
+                </div>
+                <div class="form-item-body">
+                    <input class="text-field text-field-lg full-width" type="email" value="<?= isset($post['user_email']) ? $post['user_email'] : '' ?>" name="user_email" id="post-form-user">
+                </div>
+            </div>
+            <!-- /User -->
+        <? endif; ?>
+
+
+        <!-- Text -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="post-form-text">Текст</label>
+            </div>
+            <div class="form-item-body">
+                <textarea class="full-width wysiwyg wysiwyg-advanced" name="text" id="post-form-text" rows="25"><?= isset($post['text']) ? $post['text'] : '' ?></textarea>
+            </div>
+        </div>
+        <!-- /Text -->
+
+        <!-- Annotation -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="post-form-annotation">Аннотация</label>
+            </div>
+            <div class="form-item-body">
+                <textarea class="full-width wysiwyg wysiwyg-advanced" name="annotation" id="post-form-annotation" rows="25"><?= isset($post['annotation']) ? $post['annotation'] : '' ?></textarea>
+            </div>
+        </div>
+        <!-- /Annotation -->
+        
+        <!-- Thumb -->
+        <div class="form-item thumb-field">
+            <div class="form-item-header">
+                <span class="label">Миниатюра</span>
+            </div>
+            <div class="form-item-body">
+                <div class="thumb-field-control image-uploader <?= (!empty($post['avatar'])) ? 'image-uploader-active' : '' ?>">
+                        <div class="image-button">
+                            <div class="image-button-inner">
+                                <p class="image-button-caption">Загрузить</p>
+                            </div>
+                        </div>
+                        
+                        <div class="thumb-field-preview">
+                            <img src="<?= (!empty($post['avatar'])) ? '/image/zoom1/170x170/upload/' . $post['avatar'] : '' ?>" alt="" class="image-uploader-preview">
+                            
+                            <p class="thumb-field-caption">Загрузить</p>
+                        </div>
+                    
+                    <input type="hidden" name="avatar" value="<?= (!empty($post['avatar'])) ? $post['avatar'] : '' ?>">
+                    <input class="image-uploader-input" type="file" name="avatar">
+                </div>
+                
+                <p class="thumb-field-hint form-hint">Изображение будет показано в ленте новотей.<br>Предпочтительный размер по ширине — 220 пикселей.<br>Максимальный размер файла — 5 МБ.</p>
+            </div>
+        </div>
+        <!-- /Thumb -->
+        
+        <!-- Footer -->
+        <div class="form-footer row">
+            <div class="col-6 col-offset-3">
+                <button class="button button-lg full-width" name="submit" value="1"><?= ($type == 'create') ? 'Создать' : 'Обновить' ?> пост</button>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </div>
+</form>

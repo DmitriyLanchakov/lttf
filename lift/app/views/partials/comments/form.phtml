@@ -1,0 +1,33 @@
+<?
+extract([
+    'classes' => '',
+    'user_can_delete_commentaries' => false,
+    'type' => 'blog_post'
+], EXTR_SKIP);
+
+if ($type == 'project_post') {
+    $url = '/project/writeCommentary';
+    $entry_type = 'post';
+} else if ($type == 'task') {
+    $url = '/project/writeTskCommentary';
+    $entry_type = 'task';
+} else {
+    $url = '/blog/writeCommentary';
+    $entry_type = 'post';
+}
+?>
+
+<form class="comment-form container <?= $classes ?>" action="<?= $url ?>" method="POST" id="comment-form" data-user-can-delete-comments="<?= (int) $user_can_delete_commentaries ?>">
+    <div class="row">
+        <div class="col-10 col-offset-3">
+            <? if ($user_can_write_commentaries): ?>
+                <input type="hidden" name="parent" value="0">
+                <input type="hidden" name="<?= $entry_type ?>" value="<?= $entry['id'] ?>">
+                <textarea name="text" class="comment-form-field wysiwyg" placeholder="Ваш комментарий"></textarea>
+                <button class="button button-lg comment-form-submit" name="submit" value="1">Комментировать</button>
+            <? else: ?>
+                <p>Войдите, чтобы оставлять комментарии.</p>
+            <? endif; ?>
+        </div>
+    </div>
+</form>

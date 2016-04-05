@@ -1,0 +1,68 @@
+<?
+$current_page = $this->router->getRewriteUri();
+?>
+
+<div class="site-header">
+    <div class="site-header-content container">
+        <!-- Logo -->
+        <a class="site-header-left" href="/">
+            <img src="/img/logo.png" width="180" height="132" alt="Лифт в будущее">
+        </a>
+        <!-- /Logo -->
+        
+        <div class="site-header-center">
+            <a href="/">
+                <img src="/img/partners/sistema.png" width="233" height="44" alt="Благотворительный фонд «Система»">
+            </a>
+            
+            <div class="site-header-links">
+                <div class="site-header-extra-links">
+                    <div><a href="/">Выбери свой лифт</a></div>
+                    <div><a href="/">Развивающая онлайн среда</a></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="site-header-right">
+            <a href="/">
+                <img src="/img/partners/asi.png" width="145" height="61" alt="Агентство стратегических инициатив">
+            </a>
+            
+            <div class="site-header-right-bottom">
+                <p class="site-header-auth">
+                    <? if ($logged_user): ?>
+                        <a href="/profile">Профиль</a>
+                        <a href="/logout">Выйти</a>
+                    <? else: ?>
+                        <a href="/login">Вход</a>
+                        <a href="/register">Регистрация</a>
+                    <? endif; ?>
+                </p>
+                <div class="site-header-social social-links">
+                    <a href="http://vk.com/lift2future" class="social-link social-link-vk">вКонтакте</a>
+                    <a href="https://www.facebook.com/pages/Лифт-в-будущее-поддержка-молодых-талантов/226756564102174" class="social-link social-link-facebook">Facebook</a>
+                    <a href="https://twitter.com/lift2future" class="social-link social-link-twitter">Twitter</a>
+                    <a href="mailto:konkurs.sp@lifttothefuture.ru" class="social-link social-link-email">Электропочта</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Nav -->
+    <div class="main-nav">
+        <div class="container">
+            <ul class="main-nav-inner">
+                <li <?= ($current_page == '/posts') ? 'class="active"' : '' ?>>
+                    <a href="/posts">Блог</a>
+                </li>
+                <li <?= ($current_page == '/projects') ? 'class="active"' : '' ?>>
+                    <a href="/projects">Проекты</a>
+                </li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Nav -->
+</div>

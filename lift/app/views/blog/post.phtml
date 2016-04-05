@@ -1,0 +1,84 @@
+<?
+if (!empty($post['headings'])) {
+    $areas = Helper::resolveRelations($headings, $post['headings'], 'heading');
+    $main_area = $areas[0];
+}
+?>
+
+<div class="post <?= !empty($main_area) ? 'post-area-' . $main_area['id'] : '' ?>">
+    <!-- Page header -->
+    <div class="page-header" <?= !empty($post['background']) ? 'style="background-image: url(\'/upload/' . $post['background'] . '\')"' : '' ?>>
+        <div class="container">
+            <div class="page-header-inner">
+                <div class="page-header-top">
+                    <? /*
+                    <div class="page-header-cell page-header-user">
+                        <img src="<?= Helper::avatarUrl($post['user']['avatar'], 50) ?>" width="50" height="50" class="avatar">
+                        <h1 class="page-header-title"><?= $post['user']['first_name'] ?> <?= $post['user']['second_name'] ?></h1>
+                    </div>
+                    */ ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page header -->
+
+    <div class="container">
+        <!-- Header -->
+        <div class="post-header">
+            <!-- Meta -->
+            <p class="post-meta">
+                <span class="post-views"><?= $post['views'] ?></span>
+                <span class="post-date"><?= mb_strtolower(Helper::formatDate('%e %q %Y', $post['creation_time'])) ?></span>
+            </p>
+            <!-- /Meta -->
+            
+            <!-- Title -->
+            <h1 class="post-title"><?= $post['title'] ?></h1>
+            <!-- /Title -->
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Body -->
+        <div class="post-body">
+            <? if (!empty($post['annotation'])): ?>
+                <div class="post-annotation"><?= $post['annotation'] ?></div>
+            <? endif ?>
+            <div class="post-text formatted"><?= $post['text'] ?></div>
+        </div>
+        <!-- /Body -->
+        
+        <!-- Footer -->
+        <div class="post-footer">
+            <a href="/posts" class="post-back go-back">Назад к блогам</a>
+            
+            <? if ($logged_user['group'] == 1 || $logged_user['id'] == $blog['administrator']): ?>
+                <div class="post-actions actions">
+                    <a href="/posts/<?= $post['id'] ?>/update" class="action-button action-button-edit"><span class="action-button-inner">Редактировать</span></a>
+                    <a href="/posts/<?= $post['id'] ?>/delete" class="action-button action-button-delete"><span class="action-button-inner">Удалить</span></a>
+                </div>
+            <? endif ?>
+        </div>
+        <!-- /Footer -->
+    </div>
+
+    <!-- Comments -->
+    <div class="post-comments">
+        <div class="container">
+            <? $this->partial('partials/comments/list', [
+                'comments' => $commentaries,
+                'type' => 'blog_post'
+            ]) ?>
+        </div>
+    </div>
+    <!-- /Comments -->
+
+    <!-- Comment form -->
+    <? $this->view->partial('partials/comments/form', [
+        'classes' => 'post-comment-form',
+        'type' => 'blog_post',
+        'entry' => $post
+    ]) ?>
+    <!-- /Comment form -->
+</div>

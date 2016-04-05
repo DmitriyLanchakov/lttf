@@ -1,0 +1,165 @@
+<?
+extract([
+    'classes' => '',
+    'type' => 'create'
+], EXTR_SKIP);
+
+if (!empty($task)) {
+    $task['start_time'] = !empty($task['start_time']) ? explode(' ', $task['start_time'])[0] : '';
+    $task['end_time'] = !empty($task['end_time']) ? explode(' ', $task['end_time'])[0] : '';
+}
+?>
+
+<form action="" class="task-form <?= $classes ?>" method="POST">
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="page-header-inner">
+                <h1 class="page-header-title"><?= ($type == 'create') ? 'Создание' : 'Обновление' ?> задачи проекта</h1>
+            </div>
+        </div>
+    </div>
+    <!-- /Page header -->
+    
+    <div class="container">
+        <!-- Messages -->
+        <? if (!empty($result['success'])): ?>
+            <div class="form-message alert alert-success">
+                <p>Задача <?= ($type == 'create') ? 'создана' : 'обновлена' ?></p>
+            </div>
+        <? elseif (!empty($result['error'])): ?>
+            <div class="form-message alert alert-error">
+                <? if (!empty($result['error']['hasRights'])): ?>
+                    <p>Недостаточно прав</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['database']['pg_insert'])): ?>
+                    <p>Невозможно обновить базу данных</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['title'])): ?>
+                    <p>Введите заголовок</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['text'])): ?>
+                    <p>Введите текст записи</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['email']['empty'])): ?>
+                    <p>Введите e-mail ответственного</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['email']['not_existed_user'])): ?>
+                    <p>Указанный ответственным пользователь не зарегистрирован</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['emails']['not_existed_user'])): ?>
+                    <p>Пользователь с e-mail, указанным в списке участников, не зарегистрирован</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['start_time']['empty'])): ?>
+                    <p>Введите дату начала</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['end_time']['empty'])): ?>
+                    <p>Введите дату конца</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['end_time']['min'])): ?>
+                    <p>Дата начала должна быть меньше даты конца</p>
+                <? endif; ?>
+            </div>
+        <? endif ?>
+        <!-- /Messages -->
+        
+        <!-- Title -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="task-form-title">Заголовок</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($task['title']) ? $task['title'] : '' ?>" name="title" id="task-form-title" maxlength="255">
+            </div>
+        </div>
+        <!-- /Title -->
+        
+        <!-- Text -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="task-form-text">Текст</label>
+            </div>
+            <div class="form-item-body">
+                <textarea class="full-width wysiwyg wysiwyg-advanced" name="text" id="task-form-text" rows="25"><?= isset($task['text']) ? $task['text'] : '' ?></textarea>
+            </div>
+        </div>
+        <!-- /Text -->
+        
+        <div class="form-item row">
+            <!-- Start time -->
+            <div class="col-6">
+                <div class="form-item-header">
+                    <label class="label" for="task-form-start-time">Дата начала</label>
+                </div>
+                <div class="form-item-body">
+                    <input class="datepicker text-field text-field-lg full-width" type="text" data-value="<?= isset($task['start_time']) ? $task['start_time'] : '' ?>" value="<?= isset($task['start_time']) ? $task['start_time'] : '' ?>" name="start_time" id="task-form-start-time" maxlength="100">
+                </div>
+            </div>
+            <!-- /Start time -->
+            
+            <!-- End time -->
+            <div class="col-6">
+                <div class="form-item-header">
+                    <label class="label" for="task-form-end-time">Дата конца</label>
+                </div>
+                <div class="form-item-body">
+                    <input class="datepicker text-field text-field-lg full-width" type="text" data-value="<?= isset($task['end_time']) ? $task['end_time'] : '' ?>" value="<?= isset($task['end_time']) ? $task['end_time'] : '' ?>" name="end_time" id="task-form-end-time" maxlength="100">
+                </div>
+            </div>
+            <!-- /End time -->
+        </div>
+        
+        <!-- Responsible email -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="task-form-responsible-email">Email ответственного</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($task['email']) ? $task['email'] : $logged_user['email'] ?>" name="email" id="task-form-responsible-email">
+            </div>
+        </div>
+        <!-- /Responsible email -->
+        
+        <!-- Participants -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="task-form-participants">Email участников</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($task['emails']) ? $task['emails'] : '' ?>" name="emails" id="task-form-participants" placeholder="Через пробел">
+            </div>
+        </div>
+        <!-- /Participants -->
+        
+        <!-- Status -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="task-form-status">Статус</label>
+            </div>
+            <div class="form-item-body">
+                <select class="select select-lg full-width" name="status" id="task-form-status">
+                    <option value="1" <?= (isset($task['status']) && $task['status'] == 1) ? 'selected' : '' ?>>В работе</option>
+                    <option value="2" <?= (isset($task['status']) && $task['status'] == 2) ? 'selected' : '' ?>>Выполнена</option>
+                </select>
+            </div>
+        </div>
+        <!-- /Status -->
+        
+        <!-- Footer -->
+        <div class="form-footer row">
+            <div class="col-6 col-offset-3">
+                <button class="button button-lg full-width" name="submit" value="1"><?= ($type == 'create') ? 'Создать' : 'Обновить' ?> задачу</button>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </div>
+</form>

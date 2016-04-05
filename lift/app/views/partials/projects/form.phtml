@@ -1,0 +1,233 @@
+<?
+extract([
+    'classes' => '',
+    'type' => 'create'
+], EXTR_SKIP);
+?>
+
+<form class="form form-lg project-form <?= $classes ?>" method="POST" enctype="multipart/form-data">
+    <!-- Page header -->
+    <div class="page-header ta-center" id="page-header" <?= !empty($project['background']) ? 'style="background-image: url(\'/upload/' . $project['background'] . '\')"' : '' ?>>
+        <div class="container">
+            <div class="page-header-inner">
+                <div class="page-header-cell va-middle">
+                    <div class="image-button image-uploader" data-image-uploader-preview="#page-header">
+                        <div class="image-button-inner">
+                            <p class="image-button-caption">Загрузить фон</p>
+                            <p class="image-button-hint">до 5 МБ</p>
+                        </div>
+                        <input type="hidden" name="background" value="<?= (!empty($project['background'])) ? $project['background'] : '' ?>">
+                        <input class="image-uploader-input" type="file" name="background">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page header -->
+    
+    <div class="container">
+        <!-- Messages -->
+        <? if (!empty($result['success'])): ?>
+            <div class="form-message alert alert-success">
+                <p>Проект <?= ($type == 'create') ? 'создан' : 'обновлен' ?></p>
+            </div>
+        <? elseif (!empty($result['error'])): ?>
+            <div class="form-message alert alert-error">
+                <? if (!empty($result['error']['database']['pg_insert'])): ?>
+                    <p>Невозможно обновить базу данных</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['hasRights'])): ?>
+                    <p>Недостаточно прав</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['not_existed_user'])): ?>
+                    <p>Пользователь с e-mail, указанным в списке, не зарегистрирован</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['title'])): ?>
+                    <p>Введите название</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['heading'])): ?>
+                    <p>Выберите направление</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['description'])): ?>
+                    <p>Введите описание</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['text'])): ?>
+                    <p>Введите актуальность, цели или решения</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['start_time']['empty'])): ?>
+                    <p>Введите время начала</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['end_time']['empty'])): ?>
+                    <p>Введите время конца</p>
+                <? endif; ?>
+                
+                <? if (!empty($result['error']['data']['end_time']['min'])): ?>
+                    <p>Дата начала должна быть меньше даты конца</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['file']['avatar'])): ?>
+                    <p>Ошибка загрузки файла миниатюры</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['file']['background'])): ?>
+                    <p>Ошибка загрузки файла фона</p>
+                <? endif; ?>
+
+                <? if (!empty($result['error']['data']['user'])): ?>
+                    <p>Нет такого пользователя</p>
+                <? endif; ?>
+
+            </div>
+        <? endif ?>
+        <!-- /Messages -->
+
+        <!-- Title -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="project-form-title">Название</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($project['title']) ? $project['title'] : '' ?>" name="title" id="project-form-title" maxlength="255">
+            </div>
+        </div>
+        <!-- /Title -->
+
+        <? if($logged_user['group']==1): ?>
+            <!-- User -->
+            <div class="form-item">
+                <div class="form-item-header">
+                    <label class="label" for="post-form-user">Автор</label>
+                </div>
+                <div class="form-item-body">
+                    <input class="text-field text-field-lg full-width" type="email" value="<?= isset($project['administrator_email']) ? $project['administrator_email'] : '' ?>" name="administrator_email" id="post-form-user">
+                </div>
+            </div>
+            <!-- /User -->
+        <? endif; ?>
+
+
+        <!-- Area -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <span class="label">Направление</span>
+            </div>
+            <div class="form-item-body">
+                <? $this->partial('partials/area-chooser', [
+                    'selected' => (!empty($project['heading'])) ? $project['heading'] : null,
+                    'type' => 'radio'
+                ]) ?>
+            </div>
+        </div>
+        <!-- /Area -->
+        
+        <!-- Description -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="project-form-description">Описание проекта</label>
+            </div>
+            <div class="form-item-body">
+                <textarea class="full-width wysiwyg wysiwyg-advanced" name="description" id="project-form-description" rows="15"><?= isset($project['description']) ? $project['description'] : '' ?></textarea>
+            </div>
+        </div>
+        <!-- /Description -->
+        
+        <!-- Relevance -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="project-form-relevance">Актуальность проекта</label>
+            </div>
+            <div class="form-item-body">
+                <textarea class="full-width wysiwyg wysiwyg-advanced" name="relevance" id="project-form-relevance" rows="15"><?= isset($project['relevance']) ? $project['relevance'] : '' ?></textarea>
+            </div>
+        </div>
+        <!-- /Relevance -->
+        
+        <!-- Purpose -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="project-form-purpose">Цели проекта</label>
+            </div>
+            <div class="form-item-body">
+                <textarea class="full-width wysiwyg wysiwyg-advanced" name="purpose" id="project-form-purpose" rows="15"><?= isset($project['purpose']) ? $project['purpose'] : '' ?></textarea>
+            </div>
+        </div>
+        <!-- /Purpose -->
+        
+        <!-- Solutions -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="project-form-solutions">Предлагаемые решения</label>
+            </div>
+            <div class="form-item-body">
+                <textarea class="full-width wysiwyg wysiwyg-advanced" name="solutions" id="project-form-solutions" rows="15"><?= isset($project['solutions']) ? $project['solutions'] : '' ?></textarea>
+            </div>
+        </div>
+        <!-- /Solutions -->
+        
+        <!-- Thumb -->
+        <div class="form-item thumb-field">
+            <div class="form-item-header">
+                <span class="label">Миниатюра</span>
+            </div>
+            <div class="form-item-body">
+                <div class="thumb-field-control image-uploader <?= (!empty($project['avatar'])) ? 'image-uploader-active' : '' ?>">
+                        <div class="image-button">
+                            <div class="image-button-inner">
+                                <p class="image-button-caption">Загрузить</p>
+                            </div>
+                        </div>
+                        
+                        <div class="thumb-field-preview">
+                            <img src="<?= (!empty($project['avatar'])) ? '/image/zoom1/170x170/upload/' . $project['avatar'] : '' ?>" alt="" class="image-uploader-preview">
+                            
+                            <p class="thumb-field-caption">Загрузить</p>
+                        </div>
+                    
+                    <input type="hidden" name="avatar" value="<?= (!empty($project['avatar'])) ? $project['avatar'] : '' ?>">
+                    <input class="image-uploader-input" type="file" name="avatar">
+                </div>
+                
+                <p class="thumb-field-hint form-hint">Изображение будет показано в ленте проектов.<br>Максимальный размер файла — 5 МБ.</p>
+            </div>
+        </div>
+        <!-- /Thumb -->
+        
+        <!-- Authors -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="project-form-emails">Email соавторов</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($project['emails']) ? $project['emails'] : '' ?>" name="emails" id="project-form-emails" placeholder="Через пробел">
+            </div>
+        </div>
+        <!-- /Authors -->
+        
+        <!-- Participants -->
+        <div class="form-item">
+            <div class="form-item-header">
+                <label class="label" for="project-form-emails2">Email участников</label>
+            </div>
+            <div class="form-item-body">
+                <input class="text-field text-field-lg full-width" type="text" value="<?= isset($project['emails2']) ? $project['emails2'] : '' ?>" name="emails2" id="project-form-emails2" placeholder="Через пробел">
+            </div>
+        </div>
+        <!-- /Participants -->
+
+        <!-- Footer -->
+        <div class="form-footer row">
+            <div class="col-6 col-offset-5">
+                <button class="button button-lg full-width" name="submit" value="1"><?= ($type == 'create') ? 'Создать' : 'Обновить' ?> проект</button>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </div>
+</form>

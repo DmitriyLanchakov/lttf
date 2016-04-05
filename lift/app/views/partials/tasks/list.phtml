@@ -1,0 +1,35 @@
+<?
+extract([
+    'classes' => '',
+    'max_amount' => 0,
+    'page' => 1,
+    'render_more' => false,
+], EXTR_SKIP);
+
+if (empty($items)) {
+    return;
+}
+
+$url = '/' . $this->dispatcher->getControllerName() . '/' . $this->dispatcher->getActionName();
+?>
+
+<div class="task-list <?= $classes ?>" data-task-list-url="<?= $url ?>" data-task-list-page="<?= $page ?>" data-task-list-max-amount="<?= $max_amount ?>">
+    <div class="task-list-container">
+        <? foreach ($items as $item): ?>
+            <div class="task-list-item">
+                <? $this->view->partial('partials/tasks/item', [
+                    'classes' => '',
+                    'item' => $item
+                ]) ?>
+            </div>
+        <? endforeach ?>
+    </div>
+    
+    <? if ($render_more): ?>
+        <div class="task-list-footer row">
+            <div class="col-4 col-offset-4">
+                <button class="task-list-more button button-lg full-width <?= (sizeof($items) >= $max_amount) ? 'hidden' : '' ?>">Ещё!</button>
+            </div>
+        </div>
+    <? endif ?>
+</div>

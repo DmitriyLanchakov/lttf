@@ -1,0 +1,76 @@
+<?
+$area = Helper::resolveRelations($headings, $project['heading']);
+
+$is_project_coauthor = $logged_user && in_array($logged_user['id'], $project['users'][1]);
+$is_project_admin = $logged_user && $logged_user['id'] == $project['administrator'];
+$is_admin = $logged_user && $logged_user['id'] == $task['user'];
+?>
+
+<div class="post">
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="page-header-inner">
+                <div class="page-header-top">
+                    <p class="page-header-cell page-header-title"><?= $project['title'] ?></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page header -->
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="post-header">
+            <!-- Meta -->
+            <p class="post-meta">
+                <span class="post-date"><?= mb_strtolower(Helper::formatDate('%e %q %Y', $task['start_time'])) ?> — <?= mb_strtolower(Helper::formatDate('%e %q %Y', $task['end_time'])) ?></span>
+            </p>
+            <!-- /Meta -->
+            
+            <!-- Title -->
+            <h1 class="post-title"><?= $task['title'] ?></h1>
+            <!-- /Title -->
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Body -->
+        <div class="post-body">
+            <div class="post-text formatted"><?= $task['text'] ?></div>
+        </div>
+        <!-- /Body -->
+        
+        <!-- Footer -->
+        <div class="post-footer">
+            <a href="/projects/<?= $project['id'] ?>/tasks" class="post-back go-back">Назад к списку задач</a>
+            
+            <? if ($is_project_coauthor || $is_project_admin || $is_admin || $logged_user['group'] == 1): ?>
+                <div class="post-actions actions">
+                    <a href="/projects/<?= $task['project'] ?>/tasks/<?= $task['id'] ?>/update" class="action-button action-button-edit"><span class="action-button-inner">Редактировать</span></a>
+                    <a href="/projects/<?= $task['project'] ?>/tasks/<?= $task['id'] ?>/delete" class="action-button action-button-delete"><span class="action-button-inner">Удалить</span></a>
+                </div>
+            <? endif ?>
+        </div>
+        <!-- /Footer -->
+    </div>
+
+    <!-- Comments -->
+    <div class="post-comments">
+        <div class="container">
+            <? $this->partial('partials/comments/list', [
+                'comments' => $commentaries,
+                'type' => 'task'
+            ]) ?>
+        </div>
+    </div>
+    <!-- /Comments -->
+
+    <!-- Comment form -->
+    <? $this->view->partial('partials/comments/form', [
+        'classes' => 'post-comment-form',
+        'type' => 'task',
+        'entry' => $task
+    ]) ?>
+    <!-- /Comment form -->
+</div>

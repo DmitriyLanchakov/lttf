@@ -1,0 +1,81 @@
+<?
+$area = Helper::resolveRelations($headings, $project['heading']);
+$area = !empty($area[0]) ? $area[0] : null;
+
+$is_project_coauthor = $logged_user && in_array($logged_user['id'], $project['users'][1]);
+$is_project_admin = $logged_user && $logged_user['id'] == $project['administrator'];
+$is_admin = $logged_user && $logged_user['id'] == $post['user'];
+?>
+
+<div class="post <?= !empty($area) ? 'post-area-' . $area['id'] : '' ?>">
+    <!-- Page header -->
+    <div class="page-header" <?= !empty($post['background']) ? 'style="background-image: url(\'/upload/' . $post['background'] . '\')"' : '' ?>>
+        <div class="container">
+            <div class="page-header-inner">
+                <div class="page-header-top">
+                    <p class="page-header-cell page-header-title"><?= $project['title'] ?></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page header -->
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="post-header">
+            <!-- Meta -->
+            <p class="post-meta">
+                <span class="post-views"><?= $post['views'] ?></span>
+                <span class="post-date"><?= mb_strtolower(Helper::formatDate('%e %q %Y', $post['creation_time'])) ?></span>
+            </p>
+            <!-- /Meta -->
+            
+            <!-- Title -->
+            <h1 class="post-title"><?= $post['title'] ?></h1>
+            <!-- /Title -->
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Body -->
+        <div class="post-body">
+            <? if (!empty($post['annotation'])): ?>
+                <div class="post-annotation"><?= $post['annotation'] ?></div>
+            <? endif ?>
+            <div class="post-text formatted"><?= $post['text'] ?></div>
+        </div>
+        <!-- /Body -->
+        
+        <!-- Footer -->
+        <div class="post-footer">
+            <a href="/projects/<?= $project['id'] ?>/posts" class="post-back go-back">Назад к списку новостей</a>
+            
+            <? if ($is_project_coauthor || $is_project_admin || $is_admin || $logged_user['group'] == 1): ?>
+                <div class="post-actions actions">
+                    <a href="/projects/<?= $post['project'] ?>/posts/<?= $post['id'] ?>/update" class="action-button action-button-edit"><span class="action-button-inner">Редактировать</span></a>
+                    <a href="/projects/<?= $post['project'] ?>/posts/<?= $post['id'] ?>/delete" class="action-button action-button-delete"><span class="action-button-inner">Удалить</span></a>
+                </div>
+            <? endif ?>
+        </div>
+        <!-- /Footer -->
+    </div>
+
+    <!-- Comments -->
+    <div class="post-comments">
+        <div class="container">
+            <? $this->partial('partials/comments/list', [
+                'comments' => $commentaries,
+                'type' => 'project_post'
+            ]) ?>
+        </div>
+    </div>
+    <!-- /Comments -->
+
+    <!-- Comment form -->
+    <? $this->view->partial('partials/comments/form', [
+        'classes' => 'post-comment-form',
+        'type' => 'project_post',
+        'entry' => $post
+    ]) ?>
+    <!-- /Comment form -->
+</div>

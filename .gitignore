@@ -1,0 +1,9 @@
+.idea
+.DS_Store
+.directory
+*.sublime-project
+*.sublime-workspace
+.domain
+.sass-cache
+lift/public/upload
+lift/public/imageCache

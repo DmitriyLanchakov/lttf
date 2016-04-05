@@ -1,0 +1,9 @@
+<div class="container">
+    <? $this->view->partial('partials/entry-list', [
+        'items' => $projects,
+        'type' => 'project',
+        'pagination' => $pagination,
+        'render_filters' => true,
+        'render_actions' => ($logged_user && $logged_user['group'] == 1)
+    ]) ?>
+</div>

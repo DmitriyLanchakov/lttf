@@ -1,0 +1,148 @@
+<?
+extract([
+    'classes' => '',
+    'type' => 'post',
+    'pagination' => [
+        'amount' => 0,
+        'page' => 1
+    ],
+    'render_more' => true,
+    'render_filters' => false,
+    'render_actions' => false,
+    'url' => $this->router->getRewriteUri()
+], EXTR_SKIP);
+
+if ($type == 'project') {
+    $heading = 'Проекты';
+    $empty_message = 'Проектов пока нет';
+} else if ($type == 'task') {
+    $heading = 'Задачи';
+    $empty_message = 'Задач пока нет';
+} else {
+    $heading = 'Блог';
+    $empty_message = 'Постов пока нет';
+}
+
+$used_areas = Helper::getUsedAreas($items, $type);
+?>
+
+<div class="entry-list columns <?= $classes ?>" data-entry-list-url="<?= $url ?>" data-entry-list-page="<?= $pagination['page'] ?>" data-entry-list-max-amount="<?= $pagination['amount'] ?>">
+    <!-- Sidebar -->
+    <? if ($render_filters && ($items || $render_actions)): ?>
+        <div class="entry-list-sidebar columns-sidebar sidebar">
+            <? if ($items): ?>
+                <h1 class="entry-list-sidebar-heading"><?= $heading ?></h1>
+                
+                <ul class="entry-list-filters filters">
+                    <li>
+                        <button class="filters-trigger filters-trigger-area-all filters-trigger-active" data-filters-area="all">Все</button>
+                    </li>
+                    
+                    <? if (in_array(1, $used_areas)): ?>
+                        <li>
+                            <button class="filters-trigger filters-trigger-area-1" data-filters-area="1">Телеком</button>
+                        </li>
+                    <? endif ?>
+                    
+                    
+                    <? if (in_array(2, $used_areas)): ?>
+                        <li>
+                            <button class="filters-trigger filters-trigger-area-2" data-filters-area="2">Промышленность</button>
+                        </li>
+                    <? endif ?>
+                    
+                    <? if (in_array(3, $used_areas)): ?>
+                        <li>
+                            <button class="filters-trigger filters-trigger-area-3" data-filters-area="3">Биотех</button>
+                        </li>
+                    <? endif ?>
+                    
+                    <? if (in_array(4, $used_areas)): ?>
+                        <li>
+                            <button class="filters-trigger filters-trigger-area-4" data-filters-area="4">Экология</button>
+                        </li>
+                    <? endif ?>
+                    
+                    <? if (in_array(5, $used_areas)): ?>
+                        <li>
+                            <button class="filters-trigger filters-trigger-area-5" data-filters-area="5">Транспорт</button>
+                        </li>
+                    <? endif ?>
+                    
+                    <? if (in_array(6, $used_areas)): ?>
+                        <li>
+                            <button class="filters-trigger filters-trigger-area-6" data-filters-area="6">Энергетика</button>
+                        </li>
+                    <? endif ?>
+                    
+                    <? if (in_array(7, $used_areas)): ?>
+                        <li>
+                            <button class="filters-trigger filters-trigger-area-7" data-filters-area="7">Космос</button>
+                        </li>
+                    <? endif ?>
+                    
+                    <? if (in_array(8, $used_areas)): ?>
+                        <li>
+                            <button class="filters-trigger filters-trigger-area-8" data-filters-area="8">«Лифт в будущее»</button>
+                        </li>
+                    <? endif ?>
+                    
+                    <? if (in_array(9, $used_areas)): ?>
+                        <li>
+                                <button class="filters-trigger filters-trigger-area-9" data-filters-area="9">Образовательные программы</button>
+                        </li>
+                    <? endif ?>
+                    
+                    <? if (in_array(10, $used_areas)): ?>
+                        <li>
+                                <button class="filters-trigger filters-trigger-area-10" data-filters-area="10">Международные проекты</button>
+                        </li>
+                    <? endif ?>
+                </ul>
+            <? endif ?>
+            
+            <!-- Actions -->
+            <? if ($render_actions): ?>
+                <ul class="sidebar-actions">
+                    <li>
+                        <a class="sidebar-actions-create" href="/<?= $type ?>s/create">Создать <?= ($type == 'project') ? 'проект' : 'пост' ?></a>
+                    </li>
+                </ul>
+            <? endif ?>
+            <!-- /Actions -->
+        </div>
+    <? endif ?>
+    <!-- /Sidebar -->
+    
+    <!-- Main -->
+    <div class="entry-list-main columns-main">
+        <? if ($items): ?>
+            <? if ($render_filters): ?>
+                <h2 class="entry-list-heading">Все</h2>
+            <? endif ?>
+        
+            <ol class="entry-list-items">
+                <? foreach ($items as $item): ?>
+                    <li class="entry-list-item">
+                        <? $this->view->partial('partials/entry', [
+                            'classes' => '',
+                            'type' => $type,
+                            'item' => $item
+                        ]) ?>
+                    </li>
+                <? endforeach ?>
+            </ol>
+            
+            <? if ($render_more): ?>
+                <div class="entry-list-footer">
+                    <button class="entry-list-more <?= (sizeof($items) >= $pagination['amount']) ? 'hidden' : '' ?>">
+                        <span class="entry-list-more-inner">Ещё</span>
+                    </button>
+                </div>
+            <? endif ?>
+        <? else: ?>
+            <p><?= $empty_message ?></p>
+        <? endif ?>
+    </div>
+    <!-- /Main -->
+</div>

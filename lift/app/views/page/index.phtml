@@ -1,0 +1,42 @@
+<!-- Page header -->
+<div class="page-header">
+    <div class="container">
+        <div class="page-header-inner">
+            <div class="page-header-top">
+                <p class="page-header-cell page-header-title">Страницы</p>
+                
+                <p class="page-header-cell page-header-items">
+                    <a class="icon icon-new-post-white" href="/pages/create" title="Создать страницу">Создать страницу</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page header -->
+
+<div class="container">
+    <? if (!empty($pages)): ?>
+        <table class="page-list">
+            <? $i = 0; ?>
+            <? foreach ($pages as $page): ?>
+                <? $i++ ?>
+                
+                <tr>
+                    <td class="page-list-number">
+                        <?= $i ?>.
+                    </td>
+                    <td class="page-list-title">
+                        <a href="/pages/<?= $page['id'] ?>">
+                            <?= $page['title'] ?>
+                        </a>
+                    </td>
+                    <td class="page-list-actions">
+                        <a class="icon icon-edit-blue" href="/pages/<?=$page['id']?>/update" title="Редактировать">Редактировать</a>
+                    </td>
+                </tr>
+            <? endforeach ?>
+        </table>
+    <? else: ?>
+        <p>Ни одной старницы пока нет.</p>
+    <? endif ?>
+</div>

@@ -1,0 +1,43 @@
+<?
+$administrator = Helper::resolveRelations($users, $project['administrator'])[0];
+$area = Helper::resolveRelations($headings, $project['heading'])[0];
+
+$is_participant = $logged_user && in_array($logged_user['id'], $project['users'][2]);
+$is_coauthor = $logged_user && in_array($logged_user['id'], $project['users'][1]);
+$is_admin = $logged_user && $logged_user['id'] == $administrator['id'];
+?>
+
+<div class="project">
+    <!-- Header -->
+    <? $this->view->partial('partials/projects/header') ?>
+    <!-- /Header -->
+    
+    <!-- Body -->
+    <div class="project-body container">
+        <div class="columns">
+            <!-- Sidebar -->
+            <? $this->view->partial('partials/projects/sidebar', [
+                'administrator' => $administrator,
+                'coauthors' => !empty($coauthors) ? $coauthors : null,
+                'participants' => !empty($participants) ? $participants : null,
+                'active_section' => 'tasks',
+                'render_tasks' => ($is_participant || $is_coauthor || $is_admin || $logged_user['group'] == 1),
+                'render_actions' => ($is_coauthor || $is_admin || $logged_user['group'] == 1)
+            ]) ?>
+            <!-- /Sidebar -->
+            
+            <!-- Tasks -->
+            <div class="project-tasks columns-main">
+                <? if (!empty($tasks)): ?>
+                    <? $this->view->partial('partials/tasks/list', [
+                        'items' => $tasks,
+                    ]) ?>
+                <? else: ?>
+                    <p>Задач пока нет.</p>
+                <? endif ?>
+            </div>
+            <!-- /Tasks -->
+        </div>
+    </div>
+    <!-- /Body -->
+</div>

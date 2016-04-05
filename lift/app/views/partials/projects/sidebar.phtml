@@ -1,0 +1,101 @@
+<?
+extract([
+    'active_section' => 'description',
+    'render_tasks' => false,
+    'render_actions' => false,
+], EXTR_SKIP);
+?>
+
+<div class="project-sidebar columns-sidebar sidebar">
+    <!-- Sections -->
+    <ul class="project-sections">
+        <li>
+            <? if ($active_section == 'description'): ?>
+                <span class="project-sections-trigger project-sections-trigger-active project-sections-description">Описание</span>
+            <? else: ?>
+                <a class="project-sections-trigger project-sections-description" href="/projects/<?= $project['id'] ?>">Описание</a>
+            <? endif ?>
+        </li>
+        <li>
+            <? if ($active_section == 'posts'): ?>
+                <span class="project-sections-trigger project-sections-trigger-active project-sections-posts">Новости</span>
+            <? else: ?>
+                <a class="project-sections-trigger project-sections-posts" href="/projects/<?= $project['id'] ?>/posts">Новости</a>
+            <? endif ?>
+        </li>
+        
+        <? if ($render_tasks): ?>
+            <li>
+                <? if ($active_section == 'tasks'): ?>
+                    <span class="project-sections-trigger project-sections-trigger-active project-sections-tasks">Задачи</span>
+                <? else: ?>
+                    <a class="project-sections-trigger project-sections-tasks" href="/projects/<?= $project['id'] ?>/tasks">Задачи</a>
+                <? endif ?>
+            </li>
+        <? endif ?>
+    </ul>
+    <!-- /Sections -->
+
+    <!-- Creator -->
+    <div class="project-users">
+        <h2 class="project-users-heading">Создатель:</h2>
+        <ul class="project-users-list">
+            <li>
+                <a href="/users/<?= $administrator['id'] ?>">
+                    <img src="<?= Helper::avatarUrl($administrator['avatar']) ?>" class="avatar" width="50" height="50">
+                    <p><?= $administrator['first_name'] ?><br><?= $administrator['second_name'] ?></p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Creator -->
+   
+   <!-- Co-authors -->
+    <? if (!empty($coauthors)): ?>
+        <div class="project-users">
+            <h2 class="project-users-heading">Соавторы:</h2>
+            <ul class="project-users-list">
+                <? foreach ($coauthors as $coauthor): ?>
+                    <li>
+                        <a href="/users/<?= $coauthor['id'] ?>">
+                            <img src="<?= Helper::avatarUrl($coauthor['avatar']) ?>" class="avatar" width="50" height="50">
+                            <p><?= $coauthor['first_name'] ?><br><?= $coauthor['second_name'] ?></p>
+                        </a>
+                    </li>
+                <? endforeach ?>
+            </ul>
+        </div>
+    <? endif ?>
+   <!-- /Co-authors -->
+    
+    <!-- Participants -->
+    <? if (!empty($participants)): ?>
+        <div class="project-users">
+            <h2 class="project-users-heading">Участники:</h2>
+            <ul class="project-users-list">
+                <? foreach ($participants as $participant): ?>
+                    <li>
+                        <a href="/users/<?= $participant['id'] ?>">
+                            <img src="<?= Helper::avatarUrl($participant['avatar']) ?>" class="avatar" width="50" height="50">
+                            <p><?= $participant['first_name'] ?><br><?= $participant['second_name'] ?></p>
+                        </a>
+                    </li>
+                <? endforeach ?>
+            </ul>
+        </div>
+    <? endif ?>
+    <!-- /Participants -->
+    
+    <!-- Actions -->
+    <? if ($render_actions): ?>
+        <ul class="sidebar-actions">
+            <li>
+                <a class="sidebar-actions-create" href="/projects/<?= $project['id'] ?>/posts/create">Написать пост</a>
+            </li>
+            <li>
+                <a class="sidebar-actions-create" href="/projects/<?= $project['id'] ?>/tasks/create">Создать задачу</a>
+            </li>
+        </ul>
+    <? endif ?>
+    <!-- /Actions -->
+</div>

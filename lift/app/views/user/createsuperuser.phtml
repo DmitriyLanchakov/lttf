@@ -1,0 +1,31 @@
+<!-- Page header -->
+<div class="page-header">
+    <div class="container">
+        <div class="page-header-inner">
+            <h1 class="page-header-title">Создание суперпользователя</h1>
+        </div>
+    </div>
+</div>
+<!-- /Page header -->
+
+<!-- Content -->
+<div class="container">
+    <? if (!empty($result['success'])): ?>
+
+        <div class="alert alert-success">
+            <p>
+                Суперпользователь создан.<br><br>
+                Email: <strong>admin@admin.admin</strong><br>
+                Пароль: <strong>admin</strong>
+            </p>
+        </div>
+
+    <? elseif (!empty($result['error'])): ?>
+
+        <div class="alert">
+            <p>В базе уже есть <?= $result['error']['amount'] ?> пользователей</p>
+        </div>
+
+    <? endif; ?>
+</div>
+<!-- /Content -->

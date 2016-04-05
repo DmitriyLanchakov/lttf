@@ -1,0 +1,8 @@
+<div class="container">
+    <? $this->view->partial('partials/entry-list', [
+        'items' => $posts,
+        'pagination' => $pagination,
+        'render_filters' => true,
+        'render_actions' => !!$logged_user
+    ]) ?>
+</div>

@@ -1,0 +1,98 @@
+<?
+$administrator = Helper::resolveRelations($users, $project['administrator'])[0];
+$area = Helper::resolveRelations($headings, $project['heading'])[0];
+
+if (!empty($project['users'][1])) {
+    $coauthors = Helper::resolveRelations($users, $project['users'][1]);
+}
+
+if (!empty($project['users'][2])) {
+    $participants = Helper::resolveRelations($users, $project['users'][2]);
+}
+
+$is_participant = $logged_user && in_array($logged_user['id'], $project['users'][2]);
+$is_coauthor = $logged_user && in_array($logged_user['id'], $project['users'][1]);
+$is_admin = $logged_user && $logged_user['id'] == $administrator['id'];
+?>
+
+<div class="project">
+    <!-- Header -->
+    <? $this->view->partial('partials/projects/header') ?>
+    <!-- /Header -->
+    
+    <!-- Body -->
+    <div class="project-body container">
+        <div class="columns">
+            <!-- Sidebar -->
+            <? $this->view->partial('partials/projects/sidebar', [
+                'administrator' => $administrator,
+                'coauthors' => !empty($coauthors) ? $coauthors : null,
+                'participants' => !empty($participants) ? $participants : null,
+                'active_section' => 'description',
+                'render_tasks' => ($is_participant || $is_coauthor || $is_admin || $logged_user['group'] == 1),
+                'render_actions' => ($is_coauthor || $is_admin || $logged_user['group'] == 1)
+            ]) ?>
+            <!-- /Sidebar -->
+            
+            <div class="project-content columns-main post">
+                <!-- Description -->
+                <? if (!empty($project['description'])): ?>
+                    <div class="project-content-section">
+                        <h2 class="project-content-section-heading">Описание проекта:</h2>
+                        <div class="project-content-section-body">
+                            <?= $project['description'] ?>
+                        </div>
+                    </div>
+                <? endif ?>
+                <!-- /Description -->
+                
+                <!-- Relevance -->
+                <? if (!empty($project['relevance'])): ?>
+                    <div class="project-content-section">
+                        <h2 class="project-content-section-heading">Актуальность проекта:</h2>
+                        <div class="project-content-section-body">
+                            <?= $project['relevance'] ?>
+                        </div>
+                    </div>
+                <? endif ?>
+                <!-- /Relevance -->
+                
+                <!-- Purpose -->
+                <? if (!empty($project['purpose'])): ?>
+                    <div class="project-content-section">
+                        <h2 class="project-content-section-heading">Цели проекта:</h2>
+                        <div class="project-content-section-body">
+                            <?= $project['purpose'] ?>
+                        </div>
+                    </div>
+                <? endif ?>
+                <!-- /Purpose -->
+                
+                <!-- Solutions -->
+                <? if (!empty($project['solutions'])): ?>
+                    <div class="project-content-section">
+                        <h2 class="project-content-section-heading">Предлагаемые решения:</h2>
+                        <div class="project-content-section-body">
+                            <?= $project['solutions'] ?>
+                        </div>
+                    </div>
+                <? endif ?>
+                <!-- /Solutions -->
+                
+                <!-- Footer -->
+                <div class="post-footer">
+                    <a href="/projects" class="post-back go-back">Назад к проектам</a>
+                    
+                    <? if ($is_coauthor || $is_admin || $logged_user['group'] == 1): ?>
+                        <div class="post-actions actions">
+                            <a href="/projects/<?= $project['id'] ?>/update" class="action-button action-button-edit"><span class="action-button-inner">Редактировать</span></a>
+                            <a href="/projects/<?= $project['id'] ?>/delete" class="action-button action-button-delete"><span class="action-button-inner">Удалить</span></a>
+                        </div>
+                    <? endif ?>
+                </div>
+                <!-- /Footer -->
+            </div>
+        </div>
+    </div>
+    <!-- /Body -->
+</div>

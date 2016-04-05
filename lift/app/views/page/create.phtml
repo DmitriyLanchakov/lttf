@@ -1,0 +1,9 @@
+<? $logged_user = $this->session->get('logged_user') ? $this->session->get('logged_user')['success'] : null; ?>
+
+<? if ($logged_user['group'] != 1): ?>
+    <div class="container">
+        <p class="alert alert-error">Вы не можете создавать страницы</p>
+    </div>
+<? else: ?>
+    <? $this->partial('partials/pages/form') ?>
+<? endif ?>

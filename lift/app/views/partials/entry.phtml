@@ -1,0 +1,129 @@
+<?
+extract([
+    'classes' => '',
+    'type' => 'post',
+    'attrs' => null
+], EXTR_SKIP);
+
+$render_actions = ($logged_user['group'] == 1);
+
+if (empty($item['id'])) {
+    return;
+}
+
+if (empty($item['user_id'])) {
+    if (empty($user) && empty($users)) {
+        return;
+    }
+    
+    if (empty($user)) {
+        $user = Helper::resolveRelations($users, (!empty($item['administrator'])) ? $item['administrator'] : $item['user'])[0];
+    }
+    
+    $item['user_id'] = $user['id'];
+    $item['user_avatar'] = $user['avatar'];
+    $item['first_name'] = $user['first_name'];
+    $item['second_name'] = $user['second_name'];
+}
+
+if ($type == 'project') {
+    $content = Helper::truncateString($item['description'], 200);
+    $url = '/projects/' . $item['id'];
+} else {
+    if (!empty($item['annotation'])) {
+        $content = $item['annotation'];
+    } else if (!empty($item['text'])) {
+        $content = Helper::truncateString($item['text'], 200);
+    } else {
+        $content = '';
+    }
+    
+    if (!empty($item['project'])) {
+        $url = '/projects/' . $item['project'] . '/posts/' . $item['id'];
+    } else {
+        $url = '/posts/' . $item['id'];
+    }
+}
+
+
+if (!empty($item['headings'])) {
+    if (empty($headings)) {
+        $areas = $item['headings'];
+    } else {
+        $areas = Helper::resolveRelations($headings, $item['headings'], 'heading');
+    }
+} else if (!empty($item['heading'])) {
+    $areas = Helper::resolveRelations($headings, $item['heading']);
+}
+
+$main_area = !empty($areas) ? $areas[0] : null;
+
+if ($main_area) {
+    $classes .= ' entry-area-' . $main_area['id'];
+}
+
+$attrs_str = '';
+if (is_array($attrs)) {
+    foreach ($attrs as $key => $value) {
+        $attrs_str .= $key . '="' . $value . '" ';
+    }
+}
+?>
+
+<div class="entry <?= $classes ?>" <?= $attrs_str ?>>
+    <!-- Thumb -->
+    <? if (!empty($item['avatar'])): ?>
+        <a class="entry-thumb" href="<?= $url ?>">
+            <img src="/image/zoom2/115x115/upload/<?= $item['avatar'] ?>" alt="">
+        </a>
+    <? endif ?>
+    <!-- /Thumb -->
+    
+    <!-- Header -->
+    <div class="entry-header">
+        <div class="entry-header-inner">
+            <!-- Title -->
+            <h3 class="entry-title">
+                <a href="<?= $url ?>"><?= $item['title'] ?></a>
+            </h3>
+            <!-- /Title -->
+            
+            <!-- Area -->
+            <? if ($main_area): ?>
+                <p class="entry-area"><?= str_replace(' ', '&nbsp;', $main_area['name']) ?></p>
+            <? endif; ?>
+            <!-- /Area -->
+        </div>
+    </div>
+    <!-- /Header -->
+    
+    <!-- Body -->
+    <div class="entry-body">
+        <?= $content ?>
+    </div>
+    <!-- /Body -->
+    
+    <!-- Footer -->
+    <div class="entry-footer">
+        <!-- Actions -->
+        <? if ($render_actions): ?>
+            <div class="entry-actions actions">
+                <a href="<?= $url ?>/update" class="action-button action-button-edit"><span class="action-button-inner">Редактировать</span></a>
+                <a href="<?= $url ?>/delete" class="action-button action-button-delete"><span class="action-button-inner">Удалить</span></a>
+            </div>
+        <? endif ?>
+        <!-- /Actions -->
+        
+        <!-- Meta -->
+        <div class="entry-meta">
+            <? /*
+            <p class="entry-author">
+                <a href="/users/<?= $item['user_id'] ?>"><?= $item['first_name'] ?> <?= $item['second_name'] ?></a>
+            </p>
+            */ ?>
+            <p class="entry-date"><?= mb_strtolower(Helper::formatDate('%e %q %Y', $item['creation_time'])) ?></p>
+        </div>
+        <!-- /Meta -->
+    </div>
+    <!-- /Footer -->
+</div>

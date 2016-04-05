@@ -1,0 +1,67 @@
+<?
+function getUserGroupName($user_groups, $id) {
+    if (empty($user_groups['success'])) {
+        return '';
+    }
+
+    foreach ($user_groups['success'] as $user_group) {
+        if ($user_group['id'] == $id) {
+            return $user_group['name'];
+        }
+    }
+
+    return '';
+}
+?>
+
+<!-- Page header -->
+<div class="page-header page-header-blog">
+    <div class="clearfix">
+        <ul class="breadcrumbs">
+            <li>Домой</li><!--
+         --><li>Пользователи</li>
+        </ul>
+        <div class="actions">
+            <? if ($user_can_create_users): ?>
+                <a href="/user/create" class="icon-add" title="Создать"></a>
+            <? endif; ?>
+        </div>
+    </div>
+    <h1 class="page-heading page-heading-user">Пользователи</h1>
+</div>
+<!-- /Page header -->
+
+<div class="layout">
+    <ul class="user-list">
+        <? foreach ($users as $user): ?>
+            <li class="user">
+                <div class="user-avatar avatar" style="background-image: url('/upload/<?=$user['avatar']?>')">
+                </div>
+
+                <div class="user-body">
+                    <h3 class="user-name"><a href="/users/<?=$user['id']?>"><?= $user['first_name'] . ' ' . $user['second_name'] ?></a></h3>
+                    <p class="user-email"><?= $user['email'] ?></p>
+                    <p class="user-meta">
+                        <span class="user-date"><i class="icon-time"></i> <?= date('d.m.Y в G:i', strtotime($user['registration_time'])) ?></span>
+                    </p>
+                </div>
+            </li>
+        <? endforeach; ?>
+    </ul>
+    
+               <!--  <td><?= $user['first_name'] ?></td>
+                <td><?= $user['middle_name'] ?></td>
+                <td><?= $user['second_name'] ?></td>
+                <td><a href="/users/<?=$user['id']?>"><?= $user['email'] ?></a></td>
+                <td><?= getUserGroupName($user_groups, $user['group']) ?></td>
+                <td><?= $user['type'] ?></td>
+                <td><?= date('d.m.Y', strtotime($user['registration_time'])) ?></td>
+                <td><?= date('d.m.Y', strtotime($user['update_time'])) ?></td>
+                <? if ($user_can_update_users): ?>
+                    <a href="/user/update/<?=$user['id']?>" class="btn btn-default btn-icon"><i class="fa fa-pencil"></i></a>
+                <? endif; ?>
+
+                <? if ($user_can_delete_users): ?>
+                    <a href="/user/delete/<?=$user['id']?>" class="btn btn-default btn-icon"><i class="fa fa-times"></i></a>
+                <? endif; ?> -->
+</div>
